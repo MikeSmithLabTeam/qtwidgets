@@ -70,6 +70,9 @@ class QCustomSlider(QWidget):
                 if self.checkbox.isChecked():
                     self.return_func(val)
 
+    def value(self):
+        return self.slider.value()
+
     def spinboxChanged(self, val):
         self.slider.setValue(val)
         self.spinbox.setValue(val)
