@@ -4,11 +4,14 @@ from .spinbox import QOddSpinBox
 
 class QCustomSlider(QWidget):
 
-    def __init__(self, parent=None, title='', min_=1, max_=99, spinbox=False, checkbox=False, odd=False, label=False, return_func=None):
+    def __init__(self, parent=None, title='', min_=1, max_=99, value_=None, spinbox=False, checkbox=False, odd=False, label=False, return_func=None):
         QWidget.__init__(self, parent)
 
         if min_ > max_:
             raise BackwardsRangeException(min_, max_)
+
+        if value_ is None:
+            value_ = min_
 
         self.return_func = return_func
 
@@ -22,6 +25,7 @@ class QCustomSlider(QWidget):
 
         self.slider = QSlider(Qt.Horizontal)
         self.slider.setRange(min_, max_)
+        self.slider.setValue(value_)
         self.layout.addWidget(self.slider)
 
         if spinbox:
@@ -31,6 +35,7 @@ class QCustomSlider(QWidget):
                 self.spinbox = QSpinBox(self)
 
             self.spinbox.setRange(min_, max_)
+            self.spinbox.setValue(self.slider.value())
             self.layout.addWidget(self.spinbox)
         else:
             self.spinbox = None
