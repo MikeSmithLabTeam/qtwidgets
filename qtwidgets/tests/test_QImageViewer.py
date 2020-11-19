@@ -13,8 +13,12 @@ class TestQImageViewer(TestCase):
 
         app = QApplication(sys.argv)
 
+        def print_event(e):
+            print(e.key())
+
         viewer = QImageViewer()
         viewer.setImage(im)
+        viewer.keyPressed.connect(print_event)
 
         viewer.show()
         sys.exit(app.exec_())

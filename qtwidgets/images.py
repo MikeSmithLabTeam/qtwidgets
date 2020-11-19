@@ -1,8 +1,9 @@
-from PySide2.QtCore import Qt, QRectF, Signal
+from PySide2.QtCore import Qt, QRectF, Signal, QEvent
 from PySide2.QtGui import QImage, QPixmap, QPainterPath, QPainter
 from PySide2.QtWidgets import QGraphicsView,QGraphicsScene,QFileDialog
 import numpy as np
 import qimage2ndarray
+import os
 
 class QImageViewer(QGraphicsView):
     """ PyQt image viewer widget for a QPixmap in a QGraphicsView scene with mouse zooming and panning.
@@ -27,7 +28,8 @@ class QImageViewer(QGraphicsView):
     leftMouseButtonReleased = Signal(float, float)
     rightMouseButtonReleased = Signal(float, float)
     leftMouseButtonDoubleClicked = Signal(float, float)
-    rightMouseButtonDoubleClicked =     Signal(float, float)
+    rightMouseButtonDoubleClicked = Signal(float, float)
+    keyPressed = Signal(QEvent)
 
     def __init__(self):
         QGraphicsView.__init__(self)
@@ -192,3 +194,6 @@ class QImageViewer(QGraphicsView):
     def wheelEvent(self, event):
         adj = (event.angleDelta().y() / 120) * 0.1
         self.scale(1 + adj, 1 + adj)
+
+    def keyPressEvent(self, event):
+        self.keyPressed.emit(event)
