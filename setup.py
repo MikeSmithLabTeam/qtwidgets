@@ -17,6 +17,7 @@ setuptools.setup(
     install_requires=[
         'opencv-python',
         'numpy',
+        'qimage2ndarray',
     ],
     include_package_data=True,
 )
