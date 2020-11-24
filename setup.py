@@ -17,7 +17,6 @@ setuptools.setup(
     install_requires=[
         'opencv-python',
         'numpy',
-        'pyside2'
     ],
     include_package_data=True,
 )
