@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt, QRectF, QEvent
-from PyQt5.QtCore import pyqtSignal as Signal
+from PyQt5.QtCore import pyqtSignal as Signal, QT_VERSION_STR
 from PyQt5.QtGui import QImage, QPixmap, QPainterPath, QPainter
 from PyQt5.QtWidgets import QGraphicsView,QGraphicsScene,QFileDialog
 import numpy as np
@@ -32,11 +32,11 @@ class QImageViewer(QGraphicsView):
     rightMouseButtonDoubleClicked = Signal(float, float)
     keyPressed = Signal(QEvent)
 
-    def __init__(self):
-        QGraphicsView.__init__(self)
+    def __init__(self, parent=None):
+        QGraphicsView.__init__(self, parent=parent)
 
         # Image is displayed as a QPixmap in a QGraphicsScene attached to this QGraphicsView.
-        self.scene = QGraphicsScene()
+        self.scene = QGraphicsScene(parent=self)
         self.setScene(self.scene)
 
         # Store a local handle to the scene's current image pixmap.

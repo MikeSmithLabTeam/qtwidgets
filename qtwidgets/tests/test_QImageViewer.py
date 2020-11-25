@@ -21,4 +21,4 @@ class TestQImageViewer(TestCase):
         viewer.keyPressed.connect(print_event)
 
         viewer.show()
-        sys.exit(app.exec_())
+        app.exec_()
