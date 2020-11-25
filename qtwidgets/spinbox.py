@@ -1,6 +1,5 @@
-from PySide2.QtWidgets import QSpinBox
-from PySide2.QtGui import QKeyEvent
-from PySide2.QtCore import Qt
+from PyQt5.QtWidgets import QSpinBox
+from PyQt5.QtCore import Qt
 
 
 class QOddSpinBox(QSpinBox):

@@ -1,5 +1,5 @@
-from PySide2.QtWidgets import QWidget, QSlider, QHBoxLayout, QLabel, QSpinBox, QCheckBox
-from PySide2.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QSlider, QHBoxLayout, QLabel, QSpinBox, QCheckBox
+from PyQt5.QtCore import Qt
 from .spinbox import QOddSpinBox
 
 class QCustomSlider(QWidget):

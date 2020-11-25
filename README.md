@@ -5,8 +5,8 @@ Collection of custom widgets for qt python
 ## Installation from github
     pip install git+https://github.com/MikeSmithLabTeam/qtwidgets
     
-## Pyside2 is a dependency but is better installed with conda
-    conda install -c conda-forge pyside2
+## PyQt5 is a dependency but is better installed with conda
+    conda install pyqt
     
 ## Updating if already installed
     pip install --upgrade git+https://github.com/MikeSmithLabTeam/qtwidgets

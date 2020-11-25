@@ -1,6 +1,7 @@
-from PySide2.QtCore import Qt, QRectF, Signal, QEvent
-from PySide2.QtGui import QImage, QPixmap, QPainterPath, QPainter
-from PySide2.QtWidgets import QGraphicsView,QGraphicsScene,QFileDialog
+from PyQt5.QtCore import Qt, QRectF, QEvent
+from PyQt5.QtCore import pyqtSignal as Signal
+from PyQt5.QtGui import QImage, QPixmap, QPainterPath, QPainter
+from PyQt5.QtWidgets import QGraphicsView,QGraphicsScene,QFileDialog
 import numpy as np
 import qimage2ndarray
 import os

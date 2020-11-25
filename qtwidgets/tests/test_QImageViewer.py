@@ -1,4 +1,4 @@
-from PySide2.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication
 from unittest import TestCase
 from qtwidgets import data_dir, QImageViewer
 import os

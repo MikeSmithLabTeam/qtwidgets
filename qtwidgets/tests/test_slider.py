@@ -1,6 +1,6 @@
 from qtwidgets import QCustomSlider
 from qtwidgets.sliders import BackwardsRangeException
-from PySide2.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication
 from unittest import TestCase
 import os
 import sys
