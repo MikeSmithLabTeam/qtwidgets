@@ -12,6 +12,6 @@ class TestSteppedSpinbox(TestCase):
         w = QSteppedSpinBox(None)
         w.setRange(5, 99)
         w.setSingleStep(5)
-        w.newValueChanged.connect(print)
+        w.onValueChanged.connect(print)
         w.show()
         qpp.exec_()

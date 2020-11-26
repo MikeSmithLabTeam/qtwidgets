@@ -45,16 +45,16 @@ class QOddSpinBox(QSpinBox):
 
 
 class QSteppedSpinBox(QSpinBox):
-    newValueChanged = pyqtSignal(int)
+    onValueChanged = pyqtSignal(int)
 
     def __init__(self, parent=None):
         QSpinBox.__init__(self, parent)
-        self.valueChanged.connect(self.onValueChanged)
+        self.valueChanged.connect(self.sliderValueChanged)
         self.setKeyboardTracking(False)
 
-    def onValueChanged(self, i):
+    def sliderValueChanged(self, i):
         if (i - self.minimum()) % self.singleStep() == 0:
-            self.newValueChanged.emit(i)
+            self.onValueChanged.emit(i)
         else:
             v = (i - self.minimum()) // self.singleStep()
             v *= self.singleStep()
