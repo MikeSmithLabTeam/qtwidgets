@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QSlider, QHBoxLayout, QLabel,  QCheckBox
 from PyQt5.QtCore import Qt, pyqtSignal
-from qtwidgets import QSteppedSpinBox
+from .spinbox import QSteppedSpinBox
 
 
 class QCustomSlider(QWidget):
