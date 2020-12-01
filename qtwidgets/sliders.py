@@ -1,13 +1,21 @@
-from PyQt5.QtWidgets import QWidget, QSlider, QHBoxLayout, QLabel,  QCheckBox
+from PyQt5.QtWidgets import QWidget, QSlider, QHBoxLayout, QLabel, QCheckBox
 from PyQt5.QtCore import Qt, pyqtSignal
 from .spinbox import QSteppedSpinBox
 
 
 class QCustomSlider(QWidget):
-
     valueChanged = pyqtSignal(int)
 
-    def __init__(self, parent=None, title='', min_=1, max_=99, step_=1, value_=None, spinbox=False, checkbox=False, label=False):
+    def __init__(self,
+                 parent: QWidget = None,
+                 title: str = '',
+                 min_: int = 1,
+                 max_: int = 99,
+                 step_: int = 1,
+                 value_: int = None,
+                 spinbox: bool = False,
+                 checkbox: bool = False,
+                 label: bool = False):
         QWidget.__init__(self, parent)
 
         if value_ is None:
@@ -53,7 +61,7 @@ class QCustomSlider(QWidget):
     def value(self):
         return self.slider.value()
 
-    def onValueChanged(self, i):
+    def onValueChanged(self, i: int) -> None:
         self.slider.blockSignals(True)
         self.slider.setValue(i)
         self.slider.blockSignals(False)
@@ -69,43 +77,38 @@ class QCustomSlider(QWidget):
         else:
             self.valueChanged.emit(i)
 
-    def checkboxChanged(self):
+    def checkboxChanged(self) -> None:
         self.onValueChanged(self.slider.value())
 
 
 class QSteppedSlider(QSlider):
-
     onValueChanged = pyqtSignal(int)
 
-    def __init__(self, orient=Qt.Horizontal, parent=None):
+    def __init__(self,
+                 orient: Qt.Orientation = Qt.Horizontal,
+                 parent: QWidget = None):
         QSlider.__init__(self, orient, parent)
         self.valueChanged.connect(self.sliderValueChanged)
         self._min = 0
         self._max = 99
         self._step = 1
 
-    def setValue(self, v):
+    def setValue(self, v: int) -> None:
         index = round((v - self._min) / self._step)
         return super(QSlider, self).setValue(index)
 
-    def sliderValueChanged(self, i):
-        self.onValueChanged.emit(i*self._step + self._min)
+    def sliderValueChanged(self, i: int) -> None:
+        self.onValueChanged.emit(i * self._step + self._min)
 
-    def setRange(self, min_, max_):
+    def setRange(self, min_: int, max_: int) -> None:
         self._min = min_
         self._max = max_
         self.rangeAdjusted()
 
-    def setSingleStep(self, step):
+    def setSingleStep(self, step: int) -> None:
         self._step = step
         self.rangeAdjusted()
 
     def rangeAdjusted(self):
         N = (self._max - self._min) // self._step
         self.setMaximum(N)
-
-
-class BackwardsRangeException(BaseException):
-    def __init__(self, min_, max_):
-        self.message = f"min_ value {min_} is greater than max_ value {max_}"
-        super().__init__(self.message)
