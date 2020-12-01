@@ -50,6 +50,9 @@ class QCustomSlider(QWidget):
 
         self.setLayout(self.layout)
 
+    def value(self):
+        return self.slider.value()
+
     def onValueChanged(self, i):
         self.slider.blockSignals(True)
         self.slider.setValue(i)
