@@ -7,7 +7,7 @@ class QCustomSlider(QWidget):
 
     valueChanged = pyqtSignal(int)
 
-    def __init__(self, parent=None, title='', min_=1, max_=99, step_=1, value_=None, spinbox=False, checkbox=False, odd=False, label=False):
+    def __init__(self, parent=None, title='', min_=1, max_=99, step_=1, value_=None, spinbox=False, checkbox=False, label=False):
         QWidget.__init__(self, parent)
 
         if value_ is None:
