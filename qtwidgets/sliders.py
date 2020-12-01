@@ -163,6 +163,10 @@ class QSteppedSlider(QSlider):
         self._max = 99
         self._step = 1
 
+    def setValue(self, v):
+        index = round((v - self._min) / self._step)
+        return super(QSlider, self).setValue(index)
+
     def sliderValueChanged(self, i):
         self.onValueChanged.emit(i*self._step + self._min)
 

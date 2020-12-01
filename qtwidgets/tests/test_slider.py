@@ -12,6 +12,7 @@ class TestSlider2(TestCase):
         w = QSteppedSlider()
         w.setRange(5, 55)
         w.setSingleStep(10)
+        w.setValue(25)
         w.onValueChanged.connect(print)
         w.show()
         qpp.exec_()
