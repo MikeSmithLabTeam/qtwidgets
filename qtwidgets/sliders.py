@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QWidget, QSlider, QHBoxLayout, QLabel, QSpinBox, QCheckBox
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 from .spinbox import QOddSpinBox
 
 class QCustomSlider(QWidget):
@@ -81,6 +81,50 @@ class QCustomSlider(QWidget):
     def spinboxChanged(self, val):
         self.slider.setValue(val)
         self.spinbox.setValue(val)
+
+
+class QSteppedSlider(QWidget):
+
+    valueChanged = pyqtSignal(int)
+
+    def __init__(self, parent=None, min_=1, max_=100, step=1):
+        QWidget.__init__(self, parent=parent)
+
+        self.min_ = min_
+        self.max_ = max_
+        self.step = step
+        self.slider = QSlider(Qt.Horizontal, self)
+        self.N = self.getN(min_, max_, step)
+        self.slider.setRange(0, self.N)
+        self.slider.valueChanged.connect(self.sliderValueChanged)
+
+    def getN(self, min_, max_, step):
+        N = (max_ - min_) // step
+        return N
+
+    def sliderValueChanged(self, val):
+        val = self.step * val + self.min_
+        self.valueChanged.emit(val)
+
+
+class QSteppedSlider2(QSlider):
+
+    onValueChanged = pyqtSignal(int)
+
+    def __init__(self, orient=Qt.Horizontal, parent=None):
+        QSlider.__init__(self, orient, parent)
+        self.valueChanged.connect(self.sliderValueChanged)
+
+    def sliderValueChanged(self, i):
+        if (i - self.minimum()) % self.singleStep() == 0:
+            self.onValueChanged.emit(i)
+        else:
+            v = (i - self.minimum()) // self.singleStep()
+            v *= self.singleStep()
+            v += self.minimum()
+            self.setValue(v)
+
+
 
 
 class BackwardsRangeException(BaseException):
