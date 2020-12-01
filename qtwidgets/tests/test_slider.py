@@ -1,4 +1,4 @@
-from qtwidgets import QCustomSlider, QSteppedSlider2
+from qtwidgets import QCustomSlider, QSteppedSlider
 from qtwidgets.sliders import BackwardsRangeException
 from PyQt5.QtWidgets import QApplication
 from unittest import TestCase
@@ -9,7 +9,7 @@ class TestSlider2(TestCase):
 
     def test(self):
         qpp = QApplication(sys.argv)
-        w = QSteppedSlider2()
+        w = QSteppedSlider()
         w.setRange(5, 55)
         w.setSingleStep(10)
         w.onValueChanged.connect(print)
@@ -20,7 +20,8 @@ class TestCustomSlider(TestCase):
 
     def test_slider(self):
         app = QApplication(sys.argv)
-        w = QCustomSlider(title='hello', spinbox=True)
+        w = QCustomSlider(title='hello', label=True, min_=4, max_=20, step_=4)
+        w.valueChanged.connect(print)
         w.show()
 
         sys.exit(app.exec_())
@@ -41,8 +42,10 @@ class TestCustomSlider(TestCase):
 
     def test_odd_slider_with_different_range(self):
         app = QApplication(sys.argv)
-        w = QCustomSlider(title='hello', spinbox=True, odd=True, min_=15, max_=19)
+        w = QCustomSlider(title='hello', spinbox=True, min_=15, max_=31, step_=3)
+        w.valueChanged.connect(print)
         w.show()
+        app.exec_()
 
     def test_odd_slider_with_label(self):
         app = QApplication(sys.argv)

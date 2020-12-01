@@ -1,8 +1,8 @@
 from PyQt5.QtWidgets import QWidget, QSlider, QHBoxLayout, QLabel, QSpinBox, QCheckBox
 from PyQt5.QtCore import Qt, pyqtSignal
-from .spinbox import QOddSpinBox
+from .spinbox import QOddSpinBox, QSteppedSpinBox
 
-class QCustomSlider(QWidget):
+class QCustomSlider2(QWidget):
 
     def __init__(self, parent=None, title='', min_=1, max_=99, value_=None, spinbox=False, checkbox=False, odd=False, label=False, return_func=None):
         QWidget.__init__(self, parent)
@@ -83,46 +83,103 @@ class QCustomSlider(QWidget):
         self.spinbox.setValue(val)
 
 
-class QSteppedSlider(QWidget):
+class QCustomSlider(QWidget):
 
     valueChanged = pyqtSignal(int)
 
-    def __init__(self, parent=None, min_=1, max_=100, step=1):
-        QWidget.__init__(self, parent=parent)
+    def __init__(self, parent=None, title='', min_=1, max_=99, step_=1, value_=None, spinbox=False, checkbox=False, odd=False, label=False):
+        QWidget.__init__(self, parent)
 
-        self.min_ = min_
-        self.max_ = max_
-        self.step = step
-        self.slider = QSlider(Qt.Horizontal, self)
-        self.N = self.getN(min_, max_, step)
-        self.slider.setRange(0, self.N)
-        self.slider.valueChanged.connect(self.sliderValueChanged)
+        if value_ is None:
+            value_ = min_
 
-    def getN(self, min_, max_, step):
-        N = (max_ - min_) // step
-        return N
+        self.layout = QHBoxLayout()
 
-    def sliderValueChanged(self, val):
-        val = self.step * val + self.min_
-        self.valueChanged.emit(val)
+        self.title_label = QLabel(title, self)
+        self.layout.addWidget(self.title_label)
+
+        self.slider = QSteppedSlider(Qt.Horizontal, self)
+        self.slider.setRange(min_, max_)
+        self.slider.setSingleStep(step_)
+        self.slider.setValue(value_)
+        self.slider.onValueChanged.connect(self.onValueChanged)
+        self.layout.addWidget(self.slider)
+
+        if spinbox:
+            self.spinbox = QSteppedSpinBox(self)
+            self.spinbox.setRange(min_, max_)
+            self.spinbox.setSingleStep(step_)
+            self.spinbox.setValue(value_)
+            self.spinbox.onValueChanged.connect(self.onValueChanged)
+            self.layout.addWidget(self.spinbox)
+        else:
+            self.spinbox = None
+
+        if label:
+            self.value_label = QLabel(str(value_), self)
+            self.layout.addWidget(self.value_label)
+        else:
+            self.value_label = None
+
+        if checkbox:
+            self.checkbox = QCheckBox(self)
+            self.checkbox.stateChanged.connect(self.checkboxChanged)
+            self.layout.addWidget(self.checkbox)
+        else:
+            self.checkbox = None
+
+        self.setLayout(self.layout)
+
+    def onValueChanged(self, i):
+        self.slider.blockSignals(True)
+        self.slider.setValue(i)
+        self.slider.blockSignals(False)
+        if self.spinbox:
+            self.spinbox.blockSignals(True)
+            self.spinbox.setValue(i)
+            self.spinbox.blockSignals(False)
+        if self.value_label:
+            self.value_label.setText(str(i))
+        if self.checkbox:
+            if self.checkbox.isChecked == Qt.Checked:
+                self.valueChanged.emit(i)
+        else:
+            self.valueChanged.emit(i)
+
+    def checkboxChanged(self):
+        self.onValueChanged(self.slider.value())
 
 
-class QSteppedSlider2(QSlider):
+
+
+class QSteppedSlider(QSlider):
 
     onValueChanged = pyqtSignal(int)
 
     def __init__(self, orient=Qt.Horizontal, parent=None):
         QSlider.__init__(self, orient, parent)
         self.valueChanged.connect(self.sliderValueChanged)
+        self._min = 0
+        self._max = 99
+        self._step = 1
 
     def sliderValueChanged(self, i):
-        if (i - self.minimum()) % self.singleStep() == 0:
-            self.onValueChanged.emit(i)
-        else:
-            v = (i - self.minimum()) // self.singleStep()
-            v *= self.singleStep()
-            v += self.minimum()
-            self.setValue(v)
+        self.onValueChanged.emit(i*self._step + self._min)
+
+    def setRange(self, min_, max_):
+        self._min = min_
+        self._max = max_
+        self.rangeAdjusted()
+
+
+    def setSingleStep(self, step):
+        self._step = step
+        self.rangeAdjusted()
+
+    def rangeAdjusted(self):
+        N = (self._max - self._min) / self._step
+        self.setMaximum(N)
+
 
 
 
