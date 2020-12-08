@@ -1,5 +1,4 @@
 from qtwidgets import QCustomSlider, QSteppedSlider
-from qtwidgets.sliders import BackwardsRangeException
 from PyQt5.QtWidgets import QApplication
 from unittest import TestCase
 import os
@@ -29,7 +28,7 @@ class TestCustomSlider(TestCase):
 
     def test_slider_step_size(self):
         app = QApplication(sys.argv)
-        w = QCustomSlider(title='hello', spinbox=True, step=2)
+        w = QCustomSlider(title='hello', spinbox=True, step_=2)
         w.show()
 
         sys.exit(app.exec_())

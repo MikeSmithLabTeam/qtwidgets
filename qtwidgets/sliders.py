@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QSlider, QHBoxLayout, QLabel, QCheckBox
+from PyQt5.QtWidgets import QWidget, QSlider, QHBoxLayout, QLabel, QCheckBox, QToolButton, QInputDialog
+from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt, pyqtSignal
 from .spinbox import QSteppedSpinBox
 
@@ -25,6 +26,11 @@ class QCustomSlider(QWidget):
 
         self.title_label = QLabel(title, self)
         self.layout.addWidget(self.title_label)
+
+        self.settings_button = QToolButton(self)
+        self.settings_button.clicked.connect(self.changeSettings)
+        self.settings_button.setText('⚙')
+        self.layout.addWidget(self.settings_button)
 
         self.slider = QSteppedSlider(Qt.Horizontal, self)
         self.slider.setRange(min_, max_)
@@ -57,6 +63,18 @@ class QCustomSlider(QWidget):
             self.checkbox = None
 
         self.setLayout(self.layout)
+
+    def changeSettings(self):
+        min_, ok = QInputDialog.getInt(self, 'Enter new min:', 'min: ')
+        max_, ok = QInputDialog.getInt(self, 'Enter new max:', 'max: ')
+        step_, ok = QInputDialog.getInt(self, 'Enter new step:', 'step: ')
+        self.slider.setRange(min_, max_)
+        self.slider.setSingleStep(step_)
+        self.slider.setValue(min_)
+        if self.spinbox:
+            self.spinbox.setRange(min_, max_)
+            self.spinbox.setSingleStep(step_)
+            self.spinbox.setValue(min_)
 
     def value(self):
         return self.slider.value()
