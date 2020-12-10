@@ -20,7 +20,7 @@ class TestCustomSlider(TestCase):
 
     def test_slider(self):
         app = QApplication(sys.argv)
-        w = QCustomSlider(title='hello', label=True, min_=4, max_=20, step_=4)
+        w = QCustomSlider(title='hello', label=True, min_=4, max_=20, step_=4, spinbox=True)
         w.valueChanged.connect(print)
         w.show()
 
