@@ -81,9 +81,6 @@ class QCustomSlider(QWidget):
     def value(self):
         return self.slider.value()
 
-    def getSettings(self):
-        self.slider.min
-
     def onValueChanged(self, i: int) -> None:
         self.slider.blockSignals(True)
         self.slider.setValue(i)
