@@ -66,10 +66,13 @@ class QCustomSlider(QWidget):
 
         self.setLayout(self.layout)
 
-    def changeSettings(self):
-        min_, ok = QInputDialog.getInt(self, 'Enter new min:', 'min: ')
-        max_, ok = QInputDialog.getInt(self, 'Enter new max:', 'max: ')
-        step_, ok = QInputDialog.getInt(self, 'Enter new step:', 'step: ')
+    def changeSettings(self, min_=None, max_=None, step_=None):
+        if min_ is not None:
+            min_, ok = QInputDialog.getInt(self, 'Enter new min:', 'min: ')
+        if max_ is not None:
+            max_, ok = QInputDialog.getInt(self, 'Enter new max:', 'max: ')
+        if step_ is not None:
+            step_, ok = QInputDialog.getInt(self, 'Enter new step:', 'step: ')
         self.slider.setRange(min_, max_)
         self.slider.setSingleStep(step_)
         self.slider.setValue(min_)
