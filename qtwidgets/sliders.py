@@ -19,6 +19,8 @@ class QCustomSlider(QWidget):
                  label: bool = False):
         QWidget.__init__(self, parent)
 
+        self.title = title
+
         if value_ is None:
             value_ = min_
 
@@ -78,6 +80,9 @@ class QCustomSlider(QWidget):
 
     def value(self):
         return self.slider.value()
+
+    def getSettings(self):
+        self.slider.min
 
     def onValueChanged(self, i: int) -> None:
         self.slider.blockSignals(True)
