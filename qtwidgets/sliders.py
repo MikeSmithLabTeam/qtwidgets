@@ -30,7 +30,7 @@ class QCustomSlider(QWidget):
         self.layout.addWidget(self.title_label)
 
         self.settings_button = QToolButton(self)
-        self.settings_button.clicked.connect(self.changeSettings)
+        self.settings_button.clicked.connect(lambda x=None: self.changeSettings())
         self.settings_button.setText('⚙')
         self.layout.addWidget(self.settings_button)
 
@@ -68,14 +68,19 @@ class QCustomSlider(QWidget):
 
     def changeSettings(self, min_=None, max_=None, step_=None):
         if min_ is None:
-            min_, ok = QInputDialog.getInt(self, 'Enter new min:', 'min: ')
+            min_, ok = QInputDialog.getInt(self, 'Enter new min:', 'min: ', self.slider._min)
         if max_ is None:
-            max_, ok = QInputDialog.getInt(self, 'Enter new max:', 'max: ')
+            max_, ok = QInputDialog.getInt(self, 'Enter new max:', 'max: ',self.slider._max)
         if step_ is None:
-            step_, ok = QInputDialog.getInt(self, 'Enter new step:', 'step: ')
+            step_, ok = QInputDialog.getInt(self, 'Enter new step:', 'step: ',self.slider._step)
         self.slider.setRange(min_, max_)
         self.slider.setSingleStep(step_)
-        self.slider.setValue(min_)
+
+        if self.slider.value > max_:
+            self.slider.setValue(max_)
+        elif self.slider.value < min_:
+            self.slider.setValue(min_)
+
         if self.spinbox:
             self.spinbox.setRange(min_, max_)
             self.spinbox.setSingleStep(step_)
