@@ -22,8 +22,9 @@ class QCustomTextBox(QWidget):
         self.title_label = QLabel(title, self)
         self.layout.addWidget(self.title_label)
 
-        self.textbox = QLineEdit(str(value_))
-        self.textbox.returnPressed.connect(lambda x=self.textbox.text: self.onValueChanged(x))
+        textbox = QLineEdit(str(value_))
+        textbox.returnPressed.connect(lambda x=textbox.text: self.onValueChanged(x))
+        self.layout.addWidget(textbox)
 
         if checkbox:
             self.checkbox = QCheckBox(self)
