@@ -61,6 +61,8 @@ class QCustomSlider(QWidget):
             self.checkbox = QCheckBox(self)
             self.checkbox.stateChanged.connect(self.checkboxChanged)
             self.layout.addWidget(self.checkbox)
+            self.checkbox.setEnabled(True)
+            self.checkbox.setChecked(True)
         else:
             self.checkbox = None
 
@@ -109,7 +111,14 @@ class QCustomSlider(QWidget):
             self.valueChanged.emit(i)
 
     def checkboxChanged(self) -> None:
-        self.onValueChanged(self.slider.value())
+        checkstate = self.checkbox.isChecked()
+        if checkstate:
+            self.slider.setEnabled(True)
+            self.spinbox.setEnabled(True)
+            self.onValueChanged(self.slider.value)
+        else:
+            self.slider.setEnabled(False)
+            self.spinbox.setEnabled(False)
 
 
 class QSteppedSlider(QSlider):
