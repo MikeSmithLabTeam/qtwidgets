@@ -14,7 +14,6 @@ class QCustomSlider(QWidget):
                  max_: int = 99,
                  step_: int = 1,
                  value_: int = None,
-                 update: str = 'onValueChanged',
                  spinbox: bool = False,
                  checkbox: bool = False,
                  label: bool = False):
@@ -39,10 +38,7 @@ class QCustomSlider(QWidget):
         self.slider.setRange(min_, max_)
         self.slider.setSingleStep(step_)
         self.slider.setValue(value_)
-        if update == 'onValueChanged':
-            self.slider.onValueChanged.connect(lambda slider_val=self.slider.value: self.onValueChanged(slider_val))
-        elif update == 'sliderReleased':
-            self.slider.sliderReleased.connect(lambda slider_val=self.slider.value: self.onValueChanged(slider_val))
+        self.slider.sliderReleased.connect(lambda slider_val=self.slider.value: self.onValueChanged(slider_val))
         self.layout.addWidget(self.slider)
 
         if spinbox:
