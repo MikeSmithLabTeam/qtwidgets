@@ -5,7 +5,7 @@ from .spinbox import QSteppedSpinBox
 
 
 class QCustomTextBox(QWidget):
-    valueChanged = pyqtSignal(str)
+    returnPressed = pyqtSignal(str)
 
     def __init__(self,
                  parent: QWidget = None,
@@ -16,15 +16,15 @@ class QCustomTextBox(QWidget):
         QWidget.__init__(self, parent)
 
         self.title = title
-
+        self.text=value_
         self.layout = QHBoxLayout()
 
         self.title_label = QLabel(title, self)
         self.layout.addWidget(self.title_label)
 
-        textbox = QLineEdit(str(value_))
-        textbox.returnPressed.connect(lambda x=textbox.text: self.onValueChanged(x))
-        self.layout.addWidget(textbox)
+        self.textbox = QLineEdit(str(value_))
+        self.textbox.returnPressed.connect(self.onValueChanged)
+        self.layout.addWidget(self.textbox)
 
         if checkbox:
             self.checkbox = QCheckBox(self)
@@ -36,15 +36,15 @@ class QCustomTextBox(QWidget):
         self.setLayout(self.layout)
 
     def value(self):
-        return self.textbox.value()
+        return self.textbox.text()
 
-    def onValueChanged(self, text_method) -> None:
-        text = text_method()
+    def onValueChanged(self) -> None:
+        self.text = self.value()
         if self.checkbox:
             if self.checkbox.isChecked == Qt.Checked:
-                self.valueChanged.emit(text)
+                self.returnPressed.emit(self.text)
         else:
-            self.valueChanged.emit(text)
+            self.returnPressed.emit(self.text)
 
     def checkboxChanged(self) -> None:
         self.onValueChanged(self.slider.value())
