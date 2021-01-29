@@ -11,7 +11,6 @@ class QCustomTextBox(QWidget):
                  parent: QWidget = None,
                  title: str = '',
                  value_: str = None,
-                 label: bool = False,
                  checkbox: bool =False
                  ):
         QWidget.__init__(self, parent)
@@ -24,14 +23,7 @@ class QCustomTextBox(QWidget):
         self.layout.addWidget(self.title_label)
 
         self.textbox = QLineEdit(str(value_))
-
-        if label:
-            self.value_label = QLabel(str(value_), self)
-            self.layout.addWidget(self.value_label)
-        else:
-            self.value_label = None
-
-        self.textbox.stateChanged.connect()
+        self.textbox.returnPressed.connect(lambda x=self.textbox.text: self.onValueChanged(x))
 
         if checkbox:
             self.checkbox = QCheckBox(self)
@@ -45,11 +37,8 @@ class QCustomTextBox(QWidget):
     def value(self):
         return self.textbox.value()
 
-    def onValueChanged(self, text: str) -> None:
-        self.textbox.blockSignals(True)
-        self.textbox.setValue(text)
-        self.textbox.blockSignals(False)
-
+    def onValueChanged(self, text_method) -> None:
+        text = text_method()
         if self.checkbox:
             if self.checkbox.isChecked == Qt.Checked:
                 self.valueChanged.emit(text)
