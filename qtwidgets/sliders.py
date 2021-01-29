@@ -40,9 +40,9 @@ class QCustomSlider(QWidget):
         self.slider.setSingleStep(step_)
         self.slider.setValue(value_)
         if update == 'onValueChanged':
-            self.slider.onValueChanged.connect(self.onValueChanged)
+            self.slider.onValueChanged.connect(lambda splider_val=self.slider.value: self.onValueChanged(slider_val))
         elif update == 'sliderReleased':
-            self.slider.sliderReleased.connect(self.onValueChanged)
+            self.slider.sliderReleased.connect(lambda splider_val=self.slider.value: self.onValueChanged(slider_val))
         self.layout.addWidget(self.slider)
 
         if spinbox:
