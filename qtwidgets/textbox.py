@@ -30,6 +30,8 @@ class QCustomTextBox(QWidget):
             self.checkbox = QCheckBox(self)
             self.checkbox.stateChanged.connect(self.checkboxChanged)
             self.layout.addWidget(self.checkbox)
+            self.checkbox.setEnabled(True)
+            self.checkbox.setChecked(True)
         else:
             self.checkbox = None
 
@@ -47,4 +49,11 @@ class QCustomTextBox(QWidget):
             self.returnPressed.emit(self.text)
 
     def checkboxChanged(self) -> None:
-        self.returnPressed.emit(self.value())
+        checkstate = self.checkbox.isChecked()
+        if checkstate:
+            self.slider.setEnabled(True)
+            self.spinbox.setEnabled(True)
+            self.returnPressed.emit(self.value)
+        else:
+            self.slider.setEnabled(False)
+            self.spinbox.setEnabled(False)
