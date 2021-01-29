@@ -76,9 +76,11 @@ class QCustomSlider(QWidget):
         self.slider.setRange(min_, max_)
         self.slider.setSingleStep(step_)
 
-        if self.slider.value > max_:
+        value = self.value()
+
+        if value > max_:
             self.slider.setValue(max_)
-        elif self.slider.value < min_:
+        elif value < min_:
             self.slider.setValue(min_)
 
         if self.spinbox:
