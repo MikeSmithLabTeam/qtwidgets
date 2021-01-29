@@ -25,10 +25,10 @@ class SelectAreaWidget(QWidget):
 
         if self.shape == 'rect':
             qp.drawRect(QRect(self.begin, self.end))
-        elif self.shape == 'mask_ellipse':
+        elif self.shape == 'ellipse':
             qp.drawEllipse(QRect(self.begin, self.end))
             self.ellipse_pts = ((self.begin.x(),self.begin.y()),(self.end.x(),self.end.y()))
-        elif self.shape == 'mask_polygon':
+        elif self.shape == 'polygon':
             points=QPolygon(self.points)
             qp.drawPolygon(points)
 
