@@ -14,6 +14,7 @@ class QCustomSlider(QWidget):
                  max_: int = 99,
                  step_: int = 1,
                  value_: int = None,
+                 update: str = 'onValueChanged',
                  spinbox: bool = False,
                  checkbox: bool = False,
                  label: bool = False):
@@ -38,7 +39,10 @@ class QCustomSlider(QWidget):
         self.slider.setRange(min_, max_)
         self.slider.setSingleStep(step_)
         self.slider.setValue(value_)
-        self.slider.onValueChanged.connect(self.onValueChanged)
+        if update == 'onValueChanged':
+            self.slider.onValueChanged.connect(self.onValueChanged)
+        elif update == 'sliderReleased':
+            self.slider.sliderReleased.connect(self.onValueChanged)
         self.layout.addWidget(self.slider)
 
         if spinbox:
@@ -46,7 +50,7 @@ class QCustomSlider(QWidget):
             self.spinbox.setRange(min_, max_)
             self.spinbox.setSingleStep(step_)
             self.spinbox.setValue(value_)
-            self.spinbox.onValueChanged.connect(self.onValueChanged)
+            self.spinbox.editingFinished.connect(lambda spinbox_val=self.spinbox.value: self.onValueChanged(spinbox_val))
             self.layout.addWidget(self.spinbox)
         else:
             self.spinbox = None
@@ -89,7 +93,8 @@ class QCustomSlider(QWidget):
     def value(self):
         return self.slider.value()
 
-    def onValueChanged(self, i: int) -> None:
+    def onValueChanged(self, get_value) -> None:
+        i=get_value()
         self.slider.blockSignals(True)
         self.slider.setValue(i)
         self.slider.blockSignals(False)
