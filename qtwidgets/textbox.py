@@ -52,6 +52,7 @@ class QCustomTextBox(QWidget):
         checkstate = self.checkbox.isChecked()
         if checkstate:
             self.textbox.setEnabled(True)
-            self.returnPressed.emit(self.value)
+            self.text = self.value()
+            self.returnPressed.emit(self.text)
         else:
             self.textbox.setEnabled(False)
