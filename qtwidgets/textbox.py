@@ -47,4 +47,4 @@ class QCustomTextBox(QWidget):
             self.returnPressed.emit(self.text)
 
     def checkboxChanged(self) -> None:
-        self.onValueChanged(self.slider.value())
+        self.onValueChanged(self.value())
