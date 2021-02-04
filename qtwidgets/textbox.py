@@ -28,10 +28,11 @@ class QCustomTextBox(QWidget):
 
         if checkbox:
             self.checkbox = QCheckBox(self)
-            self.checkbox.stateChanged.connect(self.checkboxChanged)
-            self.layout.addWidget(self.checkbox)
             self.checkbox.setEnabled(True)
             self.checkbox.setChecked(True)
+            self.checkbox.stateChanged.connect(self.checkboxChanged)
+            self.layout.addWidget(self.checkbox)
+
         else:
             self.checkbox = None
 
