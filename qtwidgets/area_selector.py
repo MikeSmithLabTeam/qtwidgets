@@ -35,11 +35,9 @@ class SelectAreaWidget(QWidget):
     def mousePressEvent(self, event):
         self.begin = event.pos()
         self.end = event.pos()
-        if self.shape == 'mask_polygon':
+        if self.shape == 'polygon':
             self.points.append(QPoint(self.begin.x(),self.begin.y()))
             self.display_point_list.append((self.begin.x(),self.begin.y()))
-        elif self.shape == 'mask_ellipse':
-            self.update()
         else:
             self.update()
 
