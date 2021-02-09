@@ -66,6 +66,7 @@ class QImageViewer(QGraphicsView):
         self.setRenderHints(QPainter.Antialiasing | QPainter.SmoothPixmapTransform)
         self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
         self.setDragMode(QGraphicsView.ScrollHandDrag)
+        self.setGeometry(geometry)
 
     def hasImage(self):
         """ Returns whether or not the scene contains an image pixmap.
@@ -109,11 +110,12 @@ class QImageViewer(QGraphicsView):
             pixmap = QPixmap.fromImage(qimage)
         else:
             raise RuntimeError("ImageViewer.setImage: Argument must be a QImage or QPixmap.")
+        self.geometry = pixmap.rect()
         if self.hasImage():
             self._pixmapHandle.setPixmap(pixmap)
         else:
             self._pixmapHandle = self.scene.addPixmap(pixmap)
-        self.geometry = pixmap.rect()
+        
         self.setSceneRect(QRectF(pixmap.rect()))  # Set scene size to image size.
         self.updateViewer()
 
