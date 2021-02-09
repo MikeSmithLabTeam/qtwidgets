@@ -66,7 +66,7 @@ class QImageViewer(QGraphicsView):
         self.setRenderHints(QPainter.Antialiasing | QPainter.SmoothPixmapTransform)
         self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
         self.setDragMode(QGraphicsView.ScrollHandDrag)
-        self.setGeometry(geometry)
+        
 
     def hasImage(self):
         """ Returns whether or not the scene contains an image pixmap.
