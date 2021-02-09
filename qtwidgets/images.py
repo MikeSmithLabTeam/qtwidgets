@@ -113,6 +113,7 @@ class QImageViewer(QGraphicsView):
             self._pixmapHandle.setPixmap(pixmap)
         else:
             self._pixmapHandle = self.scene.addPixmap(pixmap)
+        self.geometry = pixmap.rect()
         self.setSceneRect(QRectF(pixmap.rect()))  # Set scene size to image size.
         self.updateViewer()
 
