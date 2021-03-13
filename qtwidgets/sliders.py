@@ -1,171 +1,10 @@
-from PyQt5.QtWidgets import QWidget, QSlider, QHBoxLayout, QLabel, QCheckBox, QToolButton, QInputDialog, QAbstractSpinBox
+from PyQt5.QtWidgets import QWidget, QSlider, QHBoxLayout, QLabel, QCheckBox, QToolButton, QInputDialog
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt, pyqtSignal
-from .spinbox import QSteppedSpinBox, QSteppedSpinBoxDecimal
+from .spinbox import QSteppedSpinBox
 
 
 class QCustomSlider(QWidget):
-    valueChanged = pyqtSignal(int)
-
-    def __init__(self,
-                 parent: QWidget = None,
-                 title: str = '',
-                 min_: int = 1,
-                 max_: int = 99,
-                 step_: int = 1,
-                 value_: int = None,
-                 spinbox: bool = False,
-                 checkbox: bool = False,
-                 label: bool = False):
-        QWidget.__init__(self, parent)
-
-        self.title = title
-
-        if value_ is None:
-            value_ = min_
-
-        self.layout = QHBoxLayout()
-
-        self.title_label = QLabel(title, self)
-        self.layout.addWidget(self.title_label)
-
-        self.settings_button = QToolButton(self)
-        self.settings_button.clicked.connect(lambda x=None: self.changeSettings())
-        self.settings_button.setText('⚙')
-        self.layout.addWidget(self.settings_button)
-
-        self.slider = QSteppedSlider(Qt.Horizontal, self)
-        self.slider.setRange(min_, max_)
-        self.slider.setSingleStep(step_)
-        self.slider.setValue(value_)
-        self.slider.sliderReleased.connect(lambda slider_val=self.slider.value: self.onValueChanged(slider_val))
-        self.layout.addWidget(self.slider)
-
-        if spinbox:
-            self.spinbox = QSteppedSpinBox(self)
-            self.spinbox.setRange(min_, max_)
-            self.spinbox.setSingleStep(step_)
-            self.spinbox.setValue(value_)
-            self.spinbox.editingFinished.connect(lambda spinbox_val=self.spinbox.value: self.onValueChanged(spinbox_val))
-            self.layout.addWidget(self.spinbox)
-        else:
-            self.spinbox = None
-
-        if label:
-            self.value_label = QLabel(str(value_), self)
-            self.layout.addWidget(self.value_label)
-        else:
-            self.value_label = None
-
-        if checkbox:
-            self.checkbox = QCheckBox(self)
-            self.checkbox.stateChanged.connect(self.checkboxChanged)
-            self.layout.addWidget(self.checkbox)
-            self.checkbox.setEnabled(True)
-            self.checkbox.setChecked(True)
-        else:
-            self.checkbox = None
-
-        self.setLayout(self.layout)
-
-    def changeSettings(self, min_=None, max_=None, step_=None):
-        if min_ is None:
-            min_, ok = QInputDialog.getInt(self, 'Enter new min:', 'min: ', self.slider._min)
-        if max_ is None:
-            max_, ok = QInputDialog.getInt(self, 'Enter new max:', 'max: ',self.slider._max)
-        if step_ is None:
-            step_, ok = QInputDialog.getInt(self, 'Enter new step:', 'step: ',self.slider._step)
-        self.slider.setRange(min_, max_)
-        self.slider.setSingleStep(step_)
-
-        value = self.value()
-
-        if value > max_:
-            self.slider.setValue(max_)
-        elif value < min_:
-            self.slider.setValue(min_)
-
-        if self.spinbox:
-            self.spinbox.setRange(min_, max_)
-            self.spinbox.setSingleStep(step_)
-            if value > max_:
-                self.spinbox.setValue(max_)
-            elif value < min_:
-                self.spinbox.setValue(min_)
-
-    def value(self):
-        return self.slider.value()
-
-    def onValueChanged(self, get_value) -> None:
-        i=get_value()
-        self.slider.blockSignals(True)
-        self.slider.setValue(i)
-        self.slider.blockSignals(False)
-        if self.spinbox:
-            self.spinbox.blockSignals(True)
-            self.spinbox.setValue(i)
-            self.spinbox.blockSignals(False)
-        if self.value_label:
-            self.value_label.setText(str(i))
-        if self.checkbox:
-            if self.checkbox.isChecked == Qt.Checked:
-                self.valueChanged.emit(i)
-        else:
-            self.valueChanged.emit(i)
-
-    def checkboxChanged(self) -> None:
-        checkstate = self.checkbox.isChecked()
-        if checkstate:
-            self.slider.setEnabled(True)
-            self.spinbox.setEnabled(True)
-            self.onValueChanged(self.slider.value)
-        else:
-            self.slider.setEnabled(False)
-            self.spinbox.setEnabled(False)
-
-
-class QSteppedSlider(QSlider):
-    onValueChanged = pyqtSignal(int)
-
-    def __init__(self,
-                 orient: Qt.Orientation = Qt.Horizontal,
-                 parent: QWidget = None):
-        QSlider.__init__(self, orient, parent)
-        self.valueChanged.connect(self.sliderValueChanged)
-        self._min = 0
-        self._max = 99
-        self._step = 1
-
-    def setValue(self, v: int) -> None:
-        index = round((v - self._min) / self._step)
-        return super(QSlider, self).setValue(index)
-
-    def sliderValueChanged(self, i: int) -> None:
-        self.onValueChanged.emit(i * self._step + self._min)
-
-    def value(self) -> int:
-        return super(QSteppedSlider, self).value()*self._step + self._min
-
-    def setRange(self, min_: int, max_: int) -> None:
-        self._min = min_
-        self._max = max_
-        self.rangeAdjusted()
-
-    def setSingleStep(self, step: int) -> None:
-        self._step = step
-        self.rangeAdjusted()
-
-    def rangeAdjusted(self):
-        N = (self._max - self._min) // self._step
-        self.setMaximum(N)
-
-
-
-
-
-
-
-class QCustomSliderDecimal(QWidget):
     valueChanged = pyqtSignal(int)
 
     def __init__(self,
@@ -197,7 +36,7 @@ class QCustomSliderDecimal(QWidget):
         self.settings_button.setText('⚙')
         self.layout.addWidget(self.settings_button)
 
-        self.slider = QSteppedSliderDecimal(Qt.Horizontal, self)
+        self.slider = QSteppedSlider(Qt.Horizontal, self)
         self.slider.setRange(min_, max_)
         self.slider.setSingleStep(step_)
         self.slider.setValue(value_)
@@ -205,9 +44,7 @@ class QCustomSliderDecimal(QWidget):
         self.layout.addWidget(self.slider)
 
         if spinbox:
-            self.spinbox = QSteppedSpinBoxDecimal(self)
-            self.spinbox.setDecimals(self.decimals)
-            self.spinbox.setStepType(QAbstractSpinBox.AdaptiveDecimalStepType) 
+            self.spinbox = QSteppedSpinBox(self, decimals=decimals)
             self.spinbox.setRange(min_, max_)
             self.spinbox.setSingleStep(step_)
             self.spinbox.setValue(value_)
@@ -303,41 +140,7 @@ class QCustomSliderDecimal(QWidget):
             self.slider.setEnabled(False)
             self.spinbox.setEnabled(False)
 
-class DoubleSlider(QSlider):
-
-    # create our our signal that we can connect to if necessary
-    doubleValueChanged = pyqtSignal(float)
-
-    def __init__(self, decimals=3, *args, **kargs):
-        super(DoubleSlider, self).__init__( *args, **kargs)
-        self._multi = 10 ** decimals
-
-        self.valueChanged.connect(self.emitDoubleValueChanged)
-
-    def emitDoubleValueChanged(self):
-        value = float(super(DoubleSlider, self).value())/self._multi
-        self.doubleValueChanged.emit(value)
-
-    def value(self):
-        return float(super(DoubleSlider, self).value()) / self._multi
-
-    def setMinimum(self, value):
-        return super(DoubleSlider, self).setMinimum(value * self._multi)
-
-    def setMaximum(self, value):
-        return super(DoubleSlider, self).setMaximum(value * self._multi)
-
-    def setSingleStep(self, value):
-        return super(DoubleSlider, self).setSingleStep(value * self._multi)
-
-    def singleStep(self):
-        return float(super(DoubleSlider, self).singleStep()) / self._multi
-
-    def setValue(self, value):
-        super(DoubleSlider, self).setValue(int(value * self._multi))
-
-
-class QSteppedSliderDecimal(QSlider):
+class QSteppedSlider(QSlider):
     onValueChanged = pyqtSignal(int)
 
     def __init__(self,
@@ -358,7 +161,7 @@ class QSteppedSliderDecimal(QSlider):
         self.onValueChanged.emit((i * self._step + self._min)*10**self.decimals)
 
     def value(self) -> float:
-        return (super(QSteppedSliderDecimal, self).value()*self._step + self._min)/(10**self.decimals)
+        return (super(QSteppedSlider, self).value()*self._step + self._min)/(10**self.decimals)
 
     def setRange(self, min_: float, max_: float) -> None:
         self._min = min_
