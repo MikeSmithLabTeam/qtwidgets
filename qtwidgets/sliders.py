@@ -171,6 +171,25 @@ class QSteppedSlider(QSlider):
 
 
 class QCustomSliderDecimal(QWidget):
+    """
+    QCustomSliderDecimal creates a slider, spinbox, checkbox label combo that can handle
+    floating point numbers. 
+
+    inputs
+    ------
+    parent  :   parent widget.
+    title   :   title for widget
+    min_    :   initial minimum value
+    max_    :   initial maximum value
+    step_   :   step for slider
+    value_  :   initial value
+    spinbox :   boolean value that determines whether spinbox is added
+    checkbox :   boolean value that determines whether checkbox is added
+    label   :    boolean value that determines whether label is added
+    decimals:   numerical integer >=0 which determines how many decimal places to use. 
+
+    """
+
     valueChanged = pyqtSignal(float)
 
     def __init__(self,
@@ -183,7 +202,8 @@ class QCustomSliderDecimal(QWidget):
                  spinbox: bool = False,
                  checkbox: bool = False,
                  label: bool = False,
-                 decimals=0):
+                 decimals=None):
+    
         QWidget.__init__(self, parent)
 
         self.title = title
