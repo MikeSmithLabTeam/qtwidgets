@@ -8,7 +8,7 @@ class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
         
-        self.slider = QCustomSliderDecimal(min_=2, max_=10, step_=0.5,value_=5,label=True, spinbox=True, decimals=2)
+        self.slider = QCustomSliderDecimal(min_=2, max_=10, step_=0.05,value_=5,label=True, spinbox=True)
         self.setCentralWidget(self.slider)
         self.slider.valueChanged.connect(self.change)
         
