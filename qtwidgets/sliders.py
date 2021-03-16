@@ -298,7 +298,7 @@ class QCustomSliderDecimal(QWidget):
 
     def changeSettings(self, min_=None, max_=None, step_=None, value_=None, decimals=None):
         min_, max_, step_ = self._changeDialogs(min_, max_, step_, decimals)
-        if self.decimals is None:
+        if decimals is None:
             self.num_figs=self.detect_decimals(step_)
         else:
             self.num_figs = decimals
