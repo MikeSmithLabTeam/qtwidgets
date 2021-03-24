@@ -11,11 +11,11 @@ class MainWindow(QMainWindow):
         
         self.slider = QCustomSliderDecimal(min_=2, max_=10, step_=0.1,value_=5,label=True, spinbox=False)
         self.setCentralWidget(self.slider)
-        #self.slider.valueChanged.connect(self.change)
+        self.slider.valueChanged.connect(self.change)
         
-    #@pyqtSlot(float)
-    #def change(self, value):
-    #    print(value)
+    @pyqtSlot(float)
+    def change(self, value):
+        print(value)
 
 
 
