@@ -39,17 +39,22 @@ class QSteppedSpinBoxDecimal(QDoubleSpinBox):
     """
     onValueChanged = pyqtSignal(float)
 
-    def __init__(self,parent: QWidget = None, decimals=0):
+    def __init__(self,parent: QWidget = None, value_=None, decimals=0, range=None):
         QDoubleSpinBox.__init__(self, parent)
-        self.valueChanged.connect(self.sliderValueChanged)
+        self.valueChanged.connect(self.spinboxValueChanged)
         self.setKeyboardTracking(False)
+        max_ = range[1]
+        min_ =  range[0]
+        step_ = range[2]
+        self.blockSignals(True)
+        self.setSingleStep(step_)  
+        self.setRange(min_, max_)
+        self.setValue(value_)
+        self.blockSignals(False)
         self.setDecimals(decimals)
 
-    def sliderValueChanged(self, i: float) -> None:
-        if (i - self.minimum()) % self.singleStep() == 0:
-            self.onValueChanged.emit(i)
-        else:
-            v = (i - self.minimum()) // self.singleStep()
-            v *= self.singleStep()
-            v += self.minimum()
-            self.setValue(v)
+
+
+    def spinboxValueChanged(self, i: float) -> None:
+        self.onValueChanged.emit(i)
+        
