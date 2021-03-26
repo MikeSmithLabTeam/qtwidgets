@@ -6,6 +6,7 @@ from .spinbox import QSteppedSpinBox, QSteppedSpinBoxDecimal
 
 class QCustomSlider(QWidget):
     valueChanged = pyqtSignal(int)
+    rangeChanged = pyqtSignal(tuple)
 
     def __init__(self,
                  parent: QWidget = None,
@@ -103,6 +104,8 @@ class QCustomSlider(QWidget):
         
         if self.value_label:
             self.value_label.setText(str(value))
+        
+        self.rangeChanged.emit((min_,max_,step_))
 
     def value(self):
         return self.slider.value()
@@ -191,6 +194,7 @@ class QCustomSliderDecimal(QWidget):
     """
 
     valueChanged = pyqtSignal(float)
+    rangeChanged =  pyqtSignal(tuple)
 
     def __init__(self,
                  parent: QWidget = None,
@@ -327,6 +331,8 @@ class QCustomSliderDecimal(QWidget):
         
         if self.value_label:
             self.update_label(value)
+        
+        self.rangeChanged.emit((min_,max_,step_))
 
     def value(self):
         return self.slider.value()
@@ -361,7 +367,7 @@ class QCustomSliderDecimal(QWidget):
 
 class QSteppedSliderDecimal(QSlider):
     onValueChanged = pyqtSignal(float)
-
+    
     def __init__(self,
                  orient: Qt.Orientation = Qt.Horizontal,
                  parent: QWidget = None):
@@ -386,6 +392,7 @@ class QSteppedSliderDecimal(QSlider):
         self._max = max_
         self._step = step_
         self.rangeAdjusted()
+        self.emit((self._min, self._max, self._step))
 
     def rangeAdjusted(self):
         N = (self._max - self._min) // self._step
