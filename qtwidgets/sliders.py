@@ -83,9 +83,10 @@ class QCustomSlider(QWidget):
 
     def changeSettings(self, min_=None, max_=None, step_=None, value_=None):
         min_, max_, step_ = self._changeDialogs(min_, max_, step_)
+        old_value = self.value()
         self.slider.setRange(min_, max_, step_)
 
-        old_value = self.value()
+
         
         if value_ is None:
             value = self.value()
