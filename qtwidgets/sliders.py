@@ -399,7 +399,7 @@ class QSteppedSliderDecimal(QSlider):
         self.rangeAdjusted()
 
     def rangeAdjusted(self):
-        N = (self._max - self._min) // self._step
+        N = int((self._max - self._min) // self._step)
         self.setMaximum(N)
 
 
