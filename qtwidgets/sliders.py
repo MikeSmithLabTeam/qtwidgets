@@ -85,8 +85,12 @@ class QCustomSlider(QWidget):
 
     def changeSettings(self, min_=None, max_=None, step_=None, value_=None):
         min_, max_, step_ = self._changeDialogs(min_, max_, step_)
+        old_value = self.value()
         self.slider.setRange(min_, max_, step_)
 
+
+
+        
         if value_ is None:
             value = self.value()
         else:
@@ -108,6 +112,8 @@ class QCustomSlider(QWidget):
             self.value_label.setText(str(value))
 
         self.rangeChanged.emit((min_,max_,step_))
+        if value < old_value:
+            self.valueChanged.emit(value)
 
     def value(self):
         return self.slider.value()
@@ -169,7 +175,7 @@ class QSteppedSlider(QSlider):
         self.rangeAdjusted()
 
     def rangeAdjusted(self):
-        N = (self._max - self._min) // self._step
+        N = int((self._max - self._min) // self._step)
         self.setMaximum(N)
 
 
@@ -397,9 +403,8 @@ class QSteppedSliderDecimal(QSlider):
         self._max = max_
         self._step = step_
         self.rangeAdjusted()
-        self.emit((self._min, self._max, self._step))
 
     def rangeAdjusted(self):
-        N = (self._max - self._min) // self._step
+        N = int((self._max - self._min) // self._step)
         self.setMaximum(N)
 
