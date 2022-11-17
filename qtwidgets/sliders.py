@@ -17,6 +17,7 @@ class QCustomSlider(QWidget):
                  value_: int = None,
                  spinbox: bool = False,
                  checkbox: bool = False,
+                 settings: bool = True,
                  label: bool = False):
         QWidget.__init__(self, parent)
 
@@ -25,21 +26,22 @@ class QCustomSlider(QWidget):
         if value_ is None:
             value_ = min_
 
-        self.layout = QHBoxLayout()       
+        self.layout = QHBoxLayout()
         self.title_label = QLabel(title, self)
         self.layout.addWidget(self.title_label)
-        self.add_slider(min_, max_, step_, value_)  
-        self.add_spinbox(min_, max_, step_, value_, show=spinbox)  
+        self.add_slider(min_, max_, step_, value_, settings=settings)
+        self.add_spinbox(min_, max_, step_, value_, show=spinbox)
         self.add_label(value_, show=label)
         self.add_checkbox(show=checkbox)
         self.changeSettings(min_, max_, step_, value_)
         self.setLayout(self.layout)
-            
-    def add_slider(self, min_, max_, step_, value_):    
-        self.settings_button = QToolButton(self)
-        self.settings_button.clicked.connect(lambda x=None: self.changeSettings())
-        self.settings_button.setText('⚙')
-        self.layout.addWidget(self.settings_button)
+
+    def add_slider(self, min_, max_, step_, value_, settings=None):
+        if settings:
+            self.settings_button = QToolButton(self)
+            self.settings_button.clicked.connect(lambda x=None: self.changeSettings())
+            self.settings_button.setText('⚙')
+            self.layout.addWidget(self.settings_button)
 
         self.slider = QSteppedSlider(Qt.Horizontal, self)
         self.slider.setRange(min_, max_, step_)
@@ -54,8 +56,8 @@ class QCustomSlider(QWidget):
             self.layout.addWidget(self.spinbox)
         else:
             self.spinbox=None
-    
-    def add_label(self, value_, show=True):    
+
+    def add_label(self, value_, show=True):
         if show:
             self.value_label = QLabel(str(value_), self)
             self.layout.addWidget(self.value_label)
@@ -84,27 +86,27 @@ class QCustomSlider(QWidget):
     def changeSettings(self, min_=None, max_=None, step_=None, value_=None):
         min_, max_, step_ = self._changeDialogs(min_, max_, step_)
         self.slider.setRange(min_, max_, step_)
-        
+
         if value_ is None:
             value = self.value()
         else:
             value = value_
-        
+
         if value > max_:
             value = max_
         elif value < min_:
             value = min_
-        
+
         self.slider.setValue(value)
-        
+
         if self.spinbox:
             self.spinbox.setRange(min_, max_)
             self.spinbox.setSingleStep(step_)
             self.spinbox.setValue(value)
-        
+
         if self.value_label:
             self.value_label.setText(str(value))
-        
+
         self.rangeChanged.emit((min_,max_,step_))
 
     def value(self):
@@ -176,7 +178,7 @@ class QSteppedSlider(QSlider):
 class QCustomSliderDecimal(QWidget):
     """
     QCustomSliderDecimal creates a slider, spinbox, checkbox label combo that can handle
-    floating point numbers. 
+    floating point numbers.
 
     inputs
     ------
@@ -189,7 +191,8 @@ class QCustomSliderDecimal(QWidget):
     spinbox :   boolean value that determines whether spinbox is added
     checkbox :   boolean value that determines whether checkbox is added
     label   :    boolean value that determines whether label is added
-    decimals:   numerical integer >=0 which determines how many decimal places to use. 
+    settings :  boolean value that determines whether settings button is displayed
+    decimals:   numerical integer >=0 which determines how many decimal places to use.
 
     """
 
@@ -206,8 +209,9 @@ class QCustomSliderDecimal(QWidget):
                  spinbox: bool = False,
                  checkbox: bool = False,
                  label: bool = False,
+                 settings: bool = True,
                  decimals=None):
-        
+
 
         self.title = title
         self.decimals = decimals
@@ -222,16 +226,16 @@ class QCustomSliderDecimal(QWidget):
         if value_ is None:
             value_ = min_
 
-        self.layout = QHBoxLayout()       
+        self.layout = QHBoxLayout()
         self.title_label = QLabel(title, self)
         self.layout.addWidget(self.title_label)
-        self.add_slider(min_, max_, step_, value_)  
-        self.add_spinbox(min_, max_, step_, value_, show=spinbox)  
+        self.add_slider(min_, max_, step_, value_, settings=settings)
+        self.add_spinbox(min_, max_, step_, value_, show=spinbox)
         self.add_label(value_, show=label)
         self.add_checkbox(show=checkbox)
         self.changeSettings(min_, max_, step_, value_, decimals)
         self.setLayout(self.layout)
-    
+
     def detect_decimals(self, step_):
         #auto calculate number of decimal places based on value
         _=str(round(step_, 5))
@@ -239,12 +243,13 @@ class QCustomSliderDecimal(QWidget):
             return len(_[_.index('.'):])-1
         else:
             return 0
-            
-    def add_slider(self, min_, max_, step_, value_):    
-        self.settings_button = QToolButton(self)
-        self.settings_button.clicked.connect(lambda x=None: self.changeSettings())
-        self.settings_button.setText('⚙')
-        self.layout.addWidget(self.settings_button)
+
+    def add_slider(self, min_, max_, step_, value_, settings=None):
+        if settings:
+            self.settings_button = QToolButton(self)
+            self.settings_button.clicked.connect(lambda x=None: self.changeSettings())
+            self.settings_button.setText('⚙')
+            self.layout.addWidget(self.settings_button)
 
         self.slider = QSteppedSliderDecimal(Qt.Horizontal, self)
         self.slider.setRange(min_, max_, step_)
@@ -259,19 +264,19 @@ class QCustomSliderDecimal(QWidget):
             self.layout.addWidget(self.spinbox)
         else:
             self.spinbox=None
-    
-    def add_label(self, value_, show=True):    
+
+    def add_label(self, value_, show=True):
         if show:
             self.value_label = QLabel(str(value_), self)
             self.update_label(value_)
             self.layout.addWidget(self.value_label)
         else:
             self.value_label = None
-        
-    def update_label(self, value_):        
+
+    def update_label(self, value_):
         value_ = str(round(value_,self.num_figs))
         if '.' in value_:
-            missing_zeros = self.num_figs + 1 - len(value_[value_.index('.'):]) 
+            missing_zeros = self.num_figs + 1 - len(value_[value_.index('.'):])
         else:
             missing_zeros = self.num_figs
             if self.num_figs > 0:
@@ -312,26 +317,26 @@ class QCustomSliderDecimal(QWidget):
         if value_ is None:
             value = self.value()
         else:
-            value = value_  
+            value = value_
         self.slider.setRange(min_, max_, step_)
-        
+
         if value > max_:
             value = max_
         elif value < min_:
             value = min_
-    
+
         value = round(value, self.num_figs)
         self.slider.setValue(value)
-        
+
         if self.spinbox:
             self.spinbox.setDecimals(self.num_figs)
             self.spinbox.setRange(min_, max_)
             self.spinbox.setSingleStep(step_)
             self.spinbox.setValue(value)
-        
+
         if self.value_label:
             self.update_label(value)
-        
+
         self.rangeChanged.emit((min_,max_,step_))
 
     def value(self):
@@ -367,7 +372,7 @@ class QCustomSliderDecimal(QWidget):
 
 class QSteppedSliderDecimal(QSlider):
     onValueChanged = pyqtSignal(float)
-    
+
     def __init__(self,
                  orient: Qt.Orientation = Qt.Horizontal,
                  parent: QWidget = None):
@@ -397,5 +402,4 @@ class QSteppedSliderDecimal(QSlider):
     def rangeAdjusted(self):
         N = (self._max - self._min) // self._step
         self.setMaximum(N)
-
 
