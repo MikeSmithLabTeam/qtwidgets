@@ -1,14 +1,7 @@
-import numpy as np
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox
-from PyQt5.Qt import Qt
-import PyQt5.QtGui as QtGui
 import PyQt5.QtCore as QtCore
 from qtwidgets import QImageViewer, QCustomSlider
 import sys
-
-from .. import video
-from labvision.images.colors import gray_to_bgr
-from .geometric import *
 
 import sys
 
