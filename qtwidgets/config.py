@@ -1,13 +1,13 @@
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox
 import PyQt5.QtCore as QtCore
-from qtwidgets import QImageViewer, QCustomSlider
-import sys
+from qtwidgets import QImageViewer, QCustomSlider, SelectAreaWidget
 
 import sys
 
 
 __all__ = [
     "ConfigGui",
+    "SelectShapeGui",
     "get_monitor_size"
 ]
 
@@ -17,6 +17,7 @@ def get_monitor_size():
     screen_resolution = app.desktop().screenGeometry()
     width, height = screen_resolution.width(), screen_resolution.height()
     return width, height
+
 
 class ConfigGui:
     def __init__(self, img, func, param_dict=None) -> None:
@@ -112,7 +113,50 @@ class ConfigGui:
                     self.reduced_dict = {k:v[0] for k,v in self.param_dict.items()}
                     print(self.reduced_dict)
                 self.window.close()
-             
+
+
+class SelectShapeGui:
+    def __init__(self, img, shape='rect') -> None:
+        """SelectShapeGui
+
+        Takes an image and applies a image processing function to it.
+        It then displays that image processed via the arguments in param_dict.
+        Each param is assigned a slider which can be used to adjust the params.
+        This is called by most functions if you set config=True.
+        Enter or quite closes the window.
+
+        Parameters
+        ----------
+        img : np.ndarray
+            an image to be processed. Can be updated via setter Instance.img0 = new_image
+        func : a function for processing the images self._im0 = func(img)
+        param_dict : dictionary with all the keyword args for func.
+        """
+        self.im=img
+        self.shape=shape
+        self.init_ui()
+    
+    def init_ui(self):
+        self.app = QApplication(sys.argv)
+        self.window = QWidget()
+        self.image_viewer = QImageViewer()
+        self.image_viewer.setImage(self.im)
+        self.image_viewer.keyPressed.connect(self.close_gui)
+        self.vbox = QVBoxLayout()
+        self.image_viewer.scene.addWidget(SelectAreaWidget(self.shape, self.image_viewer))
+        self.vbox.addWidget(self.image_viewer)
+        self.window.setLayout(self.vbox)
+        self.window.show()
+        
+        self.app.exec_()
+        
+    
+    def close_gui(self, event):
+        if (event.type() == QtCore.QEvent.KeyPress):
+            if event.key() == QtCore.Qt.Key_Space:
+                self.window.close()
+
+
 
 def check_init_param_val(param_list: list[int]):
     if param_list[3]%2==0:
