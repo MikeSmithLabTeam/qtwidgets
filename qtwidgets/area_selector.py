@@ -5,7 +5,7 @@ import numpy as np
 
 
 class SelectAreaWidget(QWidget):
-    def __init__(self, shape=None, viewer=None, points=None, colour=QColor(250, 10, 10, 80), handle_rad=25):
+    def __init__(self, shape=None, viewer=None, points=None, colour=QColor(250, 10, 10, 80), handle_rad=5):
         self.viewer = viewer
         self.viewer.keyPressed.connect(self.keyPressEvent)
         geometry = self.viewer.geometry

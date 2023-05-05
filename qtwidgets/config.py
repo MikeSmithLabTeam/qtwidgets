@@ -116,7 +116,7 @@ class ConfigGui:
 
 
 class SelectShapeGui:
-    def __init__(self, img, shape='rect') -> None:
+    def __init__(self, img, shape='rect', handle_rad=5) -> None:
         """SelectShapeGui
 
         Takes an image and applies a image processing function to it.
@@ -134,6 +134,7 @@ class SelectShapeGui:
         """
         self.im=img
         self.shape=shape
+        self.handle_rad=handle_rad
         self.init_ui()
     
     def init_ui(self):
@@ -143,7 +144,7 @@ class SelectShapeGui:
         self.image_viewer.setImage(self.im)
         self.image_viewer.keyPressed.connect(self.close_gui)
         self.vbox = QVBoxLayout()
-        self.image_viewer.scene.addWidget(SelectAreaWidget(self.shape, self.image_viewer))
+        self.image_viewer.scene.addWidget(SelectAreaWidget(self.shape, self.image_viewer, handle_rad=self.handle_rad))
         self.vbox.addWidget(self.image_viewer)
         self.window.setLayout(self.vbox)
         self.window.show()
