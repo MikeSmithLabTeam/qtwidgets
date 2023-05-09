@@ -144,7 +144,8 @@ class SelectShapeGui:
         self.image_viewer.setImage(self.im)
         self.image_viewer.keyPressed.connect(self.close_gui)
         self.vbox = QVBoxLayout()
-        self.image_viewer.scene.addWidget(SelectAreaWidget(self.shape, self.image_viewer, handle_rad=self.handle_rad))
+        self.select_area=SelectAreaWidget(self.shape, self.image_viewer, handle_rad=self.handle_rad)
+        self.image_viewer.scene.addWidget(self.select_area)
         self.vbox.addWidget(self.image_viewer)
         self.window.setLayout(self.vbox)
         self.window.show()
@@ -154,6 +155,7 @@ class SelectShapeGui:
     
     def close_gui(self, event):
         if (event.type() == QtCore.QEvent.KeyPress):
+            self.pts=self.select_area.points
             if event.key() == QtCore.Qt.Key_Space:
                 self.window.close()
 
