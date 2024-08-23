@@ -5,6 +5,13 @@ from .spinbox import QSteppedSpinBox
 
 
 class QCustomTextBox(QWidget):
+    """This textbox is a custom widget that allows the user to input text.
+    It has a title, a textbox and a checkbox.
+    The checkbox is used to enable or disable the textbox.
+    The textbox is used to input text.
+    The title is used to describe the textbox.
+    When the user presses enter, the text is emitted via the returnPressed signal.
+    """
     returnPressed = pyqtSignal(str)
 
     def __init__(self,

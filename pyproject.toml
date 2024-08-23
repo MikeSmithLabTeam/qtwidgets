@@ -1,0 +1,19 @@
+# This is a file that will install dependencies etc.
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qtwidgets"
+version = "0.1.1"
+dependencies = [
+"sphinx>=4.0",
+"sphinx-autobuild>=2021.3.14",
+"sphinx-rtd-theme>=1.2.0",
+"numpy",
+"qimage2ndarray",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

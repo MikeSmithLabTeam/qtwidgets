@@ -5,6 +5,9 @@ from .spinbox import QSteppedSpinBox, QSteppedSpinBoxDecimal
 
 
 class QCustomSlider(QWidget):
+    """This slider has a slider, spinbox, checkbox and label. It can be used to adjust values in a GUI.
+    You can set the limits, step size, initial value and whether the spinbox, checkbox and label are displayed.
+    It emits a signal when the value is changed."""
     valueChanged = pyqtSignal(int)
     rangeChanged = pyqtSignal(tuple)
 

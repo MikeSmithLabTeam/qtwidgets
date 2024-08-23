@@ -1,3 +1,7 @@
+"""This is a boilerplate code snippet for a PyQt5 application.
+You can use it to try out a widget etc."""
+
+
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout
 from PyQt5.QtCore import pyqtSlot

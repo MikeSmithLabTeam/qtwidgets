@@ -5,6 +5,16 @@ import numpy as np
 
 
 class SelectAreaWidget(QWidget):
+    """This gui is a widget that allows the user to select an area on the image.
+    
+        shape: 'rect', 'ellipse', 'circle' or 'polygon'
+        viewer: QImageViewer object
+        points: list of tuples with the coordinates of the shape
+        colour: QColor object
+        handle_rad: int - This is the size of the handles that allow the user to drag the shape around
+
+        The SelectAreaWidget connects to a signal from the viewer's keyPressEvent that can be used to close the window and return the points.
+    """
     def __init__(self, shape=None, viewer=None, points=None, colour=QColor(250, 10, 10, 80), handle_rad=5):
         self.viewer = viewer
         self.viewer.keyPressed.connect(self.keyPressEvent)

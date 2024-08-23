@@ -13,6 +13,7 @@ __all__ = [
 
 
 def get_monitor_size():
+    """Get details about the monitor size"""
     app = QApplication([])
     screen_resolution = app.desktop().screenGeometry()
     width, height = screen_resolution.width(), screen_resolution.height()
@@ -20,6 +21,7 @@ def get_monitor_size():
 
 
 class ConfigGui:
+    
     def __init__(self, img, func, param_dict=None) -> None:
         """ConfigGui
 
@@ -123,14 +125,14 @@ class SelectShapeGui:
         It then displays that image processed via the arguments in param_dict.
         Each param is assigned a slider which can be used to adjust the params.
         This is called by most functions if you set config=True.
-        Enter or quite closes the window.
+        Enter or quit closes the window.
 
         Parameters
         ----------
         img : np.ndarray
             an image to be processed. Can be updated via setter Instance.img0 = new_image
-        func : a function for processing the images self._im0 = func(img)
-        param_dict : dictionary with all the keyword args for func.
+        shape : 'rect', 'ellipse', 'circle' or 'polygon'
+        handle_rad : int - This is the size of the handles that allow the user to drag the shape around
         """
         self.im=img
         self.shape=shape
@@ -162,6 +164,7 @@ class SelectShapeGui:
 
 
 def check_init_param_val(param_list: list[int]):
+    """Some OpenCV functions require certain parameters to be odd or even. This is a convenience function to check and adjust the parameters."""
     if param_list[3]%2==0:
         #If the increment value is 2 implies only odd values allowed
         if param_list[0]%2==0:
