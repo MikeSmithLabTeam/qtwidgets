@@ -16,8 +16,9 @@ class MyListWidget(QListWidget):
     """
     listChanged = pyqtSignal(tuple)
 
-    def __init__(self, method_list, dynamic=True, *args, **kwargs):
+    def __init__(self, method_list, title='',dynamic=True, *args, **kwargs):
         self.dynamic=dynamic
+        self.title=title
         self.method_list = method_list
         if self.dynamic:
             self.method_list.append('----Inactive----')
