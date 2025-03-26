@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
+from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
+from PyQt6.QtGui import *
 import numpy as np
 
 
@@ -32,7 +32,7 @@ class SelectAreaWidget(QWidget):
         self.setGeometry(geometry)
         self.setAutoFillBackground(True)
         p = self.palette()
-        p.setColor(self.backgroundRole(), Qt.transparent)
+        p.setColor(self.backgroundRole(), Qt.GlobalColor.transparent)
         self.setPalette(p)
 
         self.parse_points(points)
@@ -108,7 +108,7 @@ class SelectAreaWidget(QWidget):
             self.points.append((qpoint.x(),qpoint.y()))
         
 
-    def add_handles(self, qp, handles, colour=QColor(Qt.lightGray)):
+    def add_handles(self, qp, handles, colour=QColor(Qt.GlobalColor.lightGray)):
         br2=QBrush(colour)
         qp.setBrush(br2)
         if len(handles)>0:
@@ -116,9 +116,22 @@ class SelectAreaWidget(QWidget):
                 qp.drawEllipse(qpoint, self.handle_rad, self.handle_rad)
                 self.handles.append(qpoint)
 
+    def which_handle(self):
+        val = None
+        for index, handle in enumerate(self.qpoints):
+            distance2 = ((handle.x() - self.end.x())**2 + (handle.y() - self.end.y())**2)
+            if distance2 <= (self.handle_rad**2):#If they click within the handle
+                val=index
+        return val
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_Return:
+            self.adjustable = True
+            print(self.points)
+    
     def mousePressEvent(self, event):
-        self.begin = event.pos()
-        self.end = event.pos()
+        self.begin = event.position().toPoint()
+        self.end = event.position().toPoint()
         
         if (self.shape == 'polygon') &  (self.adjustable == False):
             self.qpoints.append(self.begin)
@@ -128,7 +141,7 @@ class SelectAreaWidget(QWidget):
         self.update()
 
     def mouseMoveEvent(self, event):
-        self.end = event.pos()
+        self.end = event.position().toPoint()
         if self.adjustable: 
             if self.handle_index is not None:               
                 self.points[self.handle_index] = (self.end.x(),self.end.y())
@@ -142,19 +155,6 @@ class SelectAreaWidget(QWidget):
     def mouseReleaseEvent(self, event):
         if self.shape != 'polygon':
             self.adjustable = True
-
-    def which_handle(self):
-        val = None
-        for index, handle in enumerate(self.qpoints):
-            distance2 = ((handle.x() - self.end.x())**2 + (handle.y() - self.end.y())**2)
-            if distance2 <= (self.handle_rad**2):#If they click within the handle
-                val=index
-        return val
-
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Return:
-            self.adjustable = True
-            print(self.points)
             
         
 

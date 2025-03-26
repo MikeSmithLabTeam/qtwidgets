@@ -1,7 +1,7 @@
-from PyQt5.QtCore import Qt, QRectF, QEvent
-from PyQt5.QtCore import pyqtSignal as Signal, QT_VERSION_STR
-from PyQt5.QtGui import QImage, QPixmap, QPainterPath, QPainter
-from PyQt5.QtWidgets import QGraphicsView,QGraphicsScene,QFileDialog
+from PyQt6.QtCore import Qt, QRectF, QEvent
+from PyQt6.QtCore import pyqtSignal as Signal, QT_VERSION_STR
+from PyQt6.QtGui import QImage, QPixmap, QPainterPath, QPainter
+from PyQt6.QtWidgets import QGraphicsView,QGraphicsScene,QFileDialog
 import numpy as np
 import qimage2ndarray
 import os
@@ -44,17 +44,17 @@ class QImageViewer(QGraphicsView):
 
         # Image aspect ratio mode.
         # !!! ONLY applies to full image. Aspect ratio is always ignored when zooming.
-        #   Qt.IgnoreAspectRatio: Scale image to fit viewport.
+        #   Qt.AspectRatioMode.IgnoreAspectRatio: Scale image to fit viewport.
         #   Qt.KeepAspectRatio: Scale image to fit inside viewport, preserving aspect ratio.
-        #   Qt.KeepAspectRatioByExpanding: Scale image to fill the viewport, preserving aspect ratio.
-        self.aspectRatioMode = Qt.KeepAspectRatio
+        #   Qt.AspectRatioMode.KeepAspectRatioByExpanding: Scale image to fill the viewport, preserving aspect ratio.
+        self.aspectRatioMode = Qt.AspectRatioMode.KeepAspectRatio
 
         # Scroll bar behaviour.
-        #   Qt.ScrollBarAlwaysOff: Never shows a scroll bar.
-        #   Qt.ScrollBarAlwaysOn: Always shows a scroll bar.
-        #   Qt.ScrollBarAsNeeded: Shows a scroll bar only when zoomed.
-        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        #   Qt.ScrollBarPolicy.ScrollBarAlwaysOff: Never shows a scroll bar.
+        #   Qt.ScrollBarPolicy.ScrollBarAlwaysOn: Always shows a scroll bar.
+        #   Qt.ScrollBarPolicy.ScrollBarAsNeeded: Shows a scroll bar only when zoomed.
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
 
         # Stack of QRectF zoom boxes in scene coordinates.
         self.zoomStack = []
@@ -63,8 +63,8 @@ class QImageViewer(QGraphicsView):
         self.canZoom = True
         self.canPan = True
 
-        self.setRenderHints(QPainter.Antialiasing | QPainter.SmoothPixmapTransform)
-        self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
+        self.setRenderHints(QPainter.RenderHint.Antialiasing | QPainter.RenderHint.SmoothPixmapTransform)
+        self.setTransformationAnchor(QGraphicsView.ViewportAnchor.AnchorUnderMouse)
         self.setDragMode(QGraphicsView.ScrollHandDrag)
         
 
@@ -125,10 +125,7 @@ class QImageViewer(QGraphicsView):
         With a fileName argument, loadImageFromFile(fileName) will attempt to load the specified image file directly.
         """
         if len(fileName) == 0:
-            if QT_VERSION_STR[0] == '4':
-                fileName = QFileDialog.getOpenFileName(self, "Open image file.")
-            elif QT_VERSION_STR[0] == '5':
-                fileName, dummy = QFileDialog.getOpenFileName(self, "Open image file.")
+            fileName, _ = QFileDialog.getOpenFileName(self, "Open image file.")
         if len(fileName) and os.path.isfile(fileName):
             image = QImage(fileName)
             self.setImage(image)
@@ -139,7 +136,7 @@ class QImageViewer(QGraphicsView):
         if not self.hasImage():
             return
         if len(self.zoomStack) and self.sceneRect().contains(self.zoomStack[-1]):
-            self.fitInView(self.zoomStack[-1], Qt.IgnoreAspectRatio)  # Show zoomed rect (ignore aspect ratio).
+            self.fitInView(self.zoomStack[-1], Qt.AspectRatioMode.IgnoreAspectRatio)  # Show zoomed rect (ignore aspect ratio).
         else:
             self.zoomStack = []  # Clear the zoom stack (in case we got here because of an invalid zoom).
             self.fitInView(self.sceneRect(), self.aspectRatioMode)  # Show entire image (use current aspect ratio mode).
@@ -153,11 +150,11 @@ class QImageViewer(QGraphicsView):
         """ Start mouse pan or zoom mode.
         """
         scenePos = self.mapToScene(event.pos())
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             if self.canPan:
                 self.setDragMode(QGraphicsView.ScrollHandDrag)
             self.leftMouseButtonPressed.emit(scenePos.x(), scenePos.y())
-        elif event.button() == Qt.RightButton:
+        elif event.button() == Qt.MouseButton.RightButton:
             if self.canZoom:
                 self.setDragMode(QGraphicsView.RubberBandDrag)
             self.rightMouseButtonPressed.emit(scenePos.x(), scenePos.y())
@@ -168,10 +165,10 @@ class QImageViewer(QGraphicsView):
         """
         QGraphicsView.mouseReleaseEvent(self, event)
         scenePos = self.mapToScene(event.pos())
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             self.setDragMode(QGraphicsView.NoDrag)
             self.leftMouseButtonReleased.emit(scenePos.x(), scenePos.y())
-        elif event.button() == Qt.RightButton:
+        elif event.button() == Qt.MouseButton.RightButton:
             if self.canZoom:
                 viewBBox = self.zoomStack[-1] if len(self.zoomStack) else self.sceneRect()
                 selectionBBox = self.scene.selectionArea().boundingRect().intersected(viewBBox)
@@ -186,9 +183,9 @@ class QImageViewer(QGraphicsView):
         """ Show entire image.
         """
         scenePos = self.mapToScene(event.pos())
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             self.leftMouseButtonDoubleClicked.emit(scenePos.x(), scenePos.y())
-        elif event.button() == Qt.RightButton:
+        elif event.button() == Qt.MouseButton.RightButton:
             if self.canZoom:
                 self.zoomStack = []  # Clear zoom stack.
                 self.updateViewer()

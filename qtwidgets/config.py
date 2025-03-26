@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox
-import PyQt5.QtCore as QtCore
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox
+import PyQt6.QtCore as QtCore
 from qtwidgets import QImageViewer, QCustomSlider, SelectAreaWidget
 
 import sys
@@ -15,7 +15,8 @@ __all__ = [
 def get_monitor_size():
     """Get details about the monitor size"""
     app = QApplication([])
-    screen_resolution = app.desktop().screenGeometry()
+    screen = app.primaryScreen()
+    screen_resolution = screen.geometry()
     width, height = screen_resolution.width(), screen_resolution.height()
     return width, height
 
@@ -109,8 +110,8 @@ class ConfigGui:
         self._update_img()
     
     def close_gui(self, event):
-        if (event.type() == QtCore.QEvent.KeyPress):
-            if event.key() == QtCore.Qt.Key_Space:
+        if (event.type() == QtCore.QEvent.Type.KeyPress):
+            if event.key() == QtCore.Qt.Key.Key_Space:
                 if self.param_dict is not None:
                     self.reduced_dict = {k:v[0] for k,v in self.param_dict.items()}
                     print(self.reduced_dict)
@@ -156,9 +157,9 @@ class SelectShapeGui:
         
     
     def close_gui(self, event):
-        if (event.type() == QtCore.QEvent.KeyPress):
+        if (event.type() == QtCore.QEvent.Type.KeyPress):
             self.pts=self.select_area.points
-            if event.key() == QtCore.Qt.Key_Space:
+            if event.key() == QtCore.Qt.Key.Key_Space:
                 self.window.close()
 
 

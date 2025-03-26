@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QWidget, QLineEdit, QHBoxLayout, QLabel, QCheckBox
-from PyQt5.QtGui import QPixmap, QIcon
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt6.QtWidgets import QWidget, QLineEdit, QHBoxLayout, QLabel, QCheckBox
+from PyQt6.QtGui import QPixmap, QIcon
+from PyQt6.QtCore import Qt, pyqtSignal
 from .spinbox import QSteppedSpinBox
 
 
@@ -51,9 +51,11 @@ class QCustomTextBox(QWidget):
     def onValueChanged(self) -> None:
         self.text = self.value()
         if self.checkbox:
-            if self.checkbox.isChecked == Qt.Checked:
+            #If there is a checkbox and it is checked then return value when enter pressed
+            if self.checkbox.isChecked():
                 self.returnPressed.emit(self.text)
         else:
+            #If no checkbox return value when enter pressed
             self.returnPressed.emit(self.text)
 
     def checkboxChanged(self) -> None:
@@ -61,6 +63,6 @@ class QCustomTextBox(QWidget):
         if checkstate:
             self.textbox.setEnabled(True)
             self.text = self.value()
-            self.returnPressed.emit(self.text)
+            #self.returnPressed.emit(self.text)
         else:
             self.textbox.setEnabled(False)

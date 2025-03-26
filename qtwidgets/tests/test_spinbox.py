@@ -1,5 +1,5 @@
 from unittest import TestCase
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication
 from qtwidgets import QSteppedSpinBox
 import sys
 

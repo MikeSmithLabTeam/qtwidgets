@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QWidget, QSlider, QHBoxLayout, QLabel, QCheckBox, QToolButton, QInputDialog
-from PyQt5.QtGui import QPixmap, QIcon
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt6.QtWidgets import QWidget, QSlider, QHBoxLayout, QLabel, QCheckBox, QToolButton, QInputDialog
+from PyQt6.QtGui import QPixmap, QIcon
+from PyQt6.QtCore import Qt, pyqtSignal
 from .spinbox import QSteppedSpinBox, QSteppedSpinBoxDecimal
 
 
@@ -46,7 +46,7 @@ class QCustomSlider(QWidget):
             self.settings_button.setText('⚙')
             self.layout.addWidget(self.settings_button)
 
-        self.slider = QSteppedSlider(Qt.Horizontal, self)
+        self.slider = QSteppedSlider(Qt.Orientation.Horizontal, self)
         self.slider.setRange(min_, max_, step_)
         self.slider.setValue(value_)
         self.slider.sliderReleased.connect(lambda slider_val=self.slider.value: self.onValueChanged(slider_val))
@@ -130,7 +130,7 @@ class QCustomSlider(QWidget):
         if self.value_label:
             self.value_label.setText(str(i))
         if self.checkbox:
-            if self.checkbox.isChecked == Qt.Checked:
+            if self.checkbox.isChecked() == Qt.CheckState.Checked:
                 self.valueChanged.emit(i)
         else:
             self.valueChanged.emit(i)
@@ -150,7 +150,7 @@ class QSteppedSlider(QSlider):
     onValueChanged = pyqtSignal(int)
 
     def __init__(self,
-                 orient: Qt.Orientation = Qt.Horizontal,
+                 orient: Qt.Orientation = Qt.Orientation.Horizontal,
                  parent: QWidget = None):
         QSlider.__init__(self, orient, parent)
         self.valueChanged.connect(self.sliderValueChanged)
@@ -257,7 +257,7 @@ class QCustomSliderDecimal(QWidget):
             self.settings_button.setText('⚙')
             self.layout.addWidget(self.settings_button)
 
-        self.slider = QSteppedSliderDecimal(Qt.Horizontal, self)
+        self.slider = QSteppedSliderDecimal(Qt.Orientation.Horizontal, self)
         self.slider.setRange(min_, max_, step_)
         self.slider.setValue(value_)
         self.slider.sliderReleased.connect(lambda slider_val=self.slider.value: self.onValueChanged(slider_val))
@@ -360,7 +360,7 @@ class QCustomSliderDecimal(QWidget):
         if self.value_label:
             self.update_label(i)
         if self.checkbox:
-            if self.checkbox.isChecked == Qt.Checked:
+            if self.checkbox.isChecked() == Qt.CheckState.Checked:
                 self.valueChanged.emit(i)
         else:
             self.valueChanged.emit(i)
@@ -380,7 +380,7 @@ class QSteppedSliderDecimal(QSlider):
     onValueChanged = pyqtSignal(float)
 
     def __init__(self,
-                 orient: Qt.Orientation = Qt.Horizontal,
+                 orient: Qt.Orientation = Qt.Orientation.Horizontal,
                  parent: QWidget = None):
         QSlider.__init__(self, orient, parent)
         self.valueChanged.connect(self.sliderValueChanged)

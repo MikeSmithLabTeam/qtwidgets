@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QSpinBox, QWidget, QDoubleSpinBox
-from PyQt5.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QSpinBox, QWidget, QDoubleSpinBox
+from PyQt6.QtCore import pyqtSignal, Qt
+from PyQt6.QtGui import QValidator
 
 
 
@@ -39,10 +40,12 @@ class QSteppedSpinBoxDecimal(QDoubleSpinBox):
     """
     onValueChanged = pyqtSignal(float)
 
-    def __init__(self,parent: QWidget = None, value_=None, decimals=0, range=None):
+    def __init__(self,parent: QWidget | None = None, value_: float | None =None, decimals: int = 0, range: tuple[float, float, float] | None = None):
         QDoubleSpinBox.__init__(self, parent)
         self.valueChanged.connect(self.spinboxValueChanged)
         self.setKeyboardTracking(False)
+        self.setAlignment(Qt.AlignmentFlag.AlignRight)
+        self.setButtonSymbols(QDoubleSpinBox.ButtonSymbols.UpDownArrows)
         max_ = range[1]
         min_ =  range[0]
         step_ = range[2]
@@ -52,8 +55,6 @@ class QSteppedSpinBoxDecimal(QDoubleSpinBox):
         self.setValue(value_)
         self.blockSignals(False)
         self.setDecimals(decimals)
-
-
 
     def spinboxValueChanged(self, i: float) -> None:
         self.onValueChanged.emit(i)

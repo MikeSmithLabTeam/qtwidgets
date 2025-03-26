@@ -1,8 +1,6 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-
-
+from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
+from PyQt6.QtGui import *
 
 
 class MyListWidget(QListWidget):   
@@ -16,7 +14,7 @@ class MyListWidget(QListWidget):
     """
     listChanged = pyqtSignal(tuple)
 
-    def __init__(self, method_list, title='',dynamic=True, *args, **kwargs):
+    def __init__(self, method_list: list[str], title: str = '',dynamic: bool = True, *args, **kwargs):
         self.dynamic=dynamic
         self.meta='mylistwidget'
         self.widget='draggable_list'
@@ -36,7 +34,7 @@ class MyListWidget(QListWidget):
             self.setDragEnabled(True)
             self.setDropIndicatorShown(True)
             self.setDragDropMode(QAbstractItemView.InternalMove)
-            self.setDefaultDropAction(Qt.MoveAction)
+            self.setDefaultDropAction(Qt.DropAction.MoveAction)
             self.setAcceptDrops(True)
         else:
             self.setDragEnabled(False)
@@ -69,8 +67,8 @@ class MyListWidget(QListWidget):
         pos = self.mapFromGlobal(QCursor.pos())
         row = self.indexAt(pos).row()
         #If right click on item remove it from list
-        if event.button() == Qt.RightButton:
-            items = self.findItems('----Inactive----', Qt.MatchExactly)
+        if event.button() == Qt.MouseButton.RightButton:
+            items = self.findItems('----Inactive----', Qt.MatchFlag.MatchExactly)
             if self.dynamic:
                 if row != self.row(items[0]):
                     self.takeItem(row)

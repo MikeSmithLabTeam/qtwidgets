@@ -1,5 +1,5 @@
 from qtwidgets import QCustomSlider, QSteppedSlider
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication
 from unittest import TestCase
 import os
 import sys
