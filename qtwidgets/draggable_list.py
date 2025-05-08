@@ -14,30 +14,33 @@ class MyListWidget(QListWidget):
     """
     listChanged = pyqtSignal(tuple)
 
-    def __init__(self, method_list: list[str], title: str = '',dynamic: bool = True, *args, **kwargs):
+    def __init__(self, method_list: list[str], title: str = '',dynamic: bool = True, dynamic_label='----Inactive----',*args, **kwargs):
         self.dynamic=dynamic
         self.meta='mylistwidget'
         self.widget='draggable_list'
         self.title=title
         self.method_list = method_list
         if self.dynamic:
-            self.method_list.append('----Inactive----')
+            self.method_list.append(dynamic_label)
         super(MyListWidget, self).__init__(*args, **kwargs)
         self.item_index = 0
 
-        self.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.setMovement(QListView.Snap)
+        self.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.setMovement(QListView.Movement.Snap)
         font=QFont()
         font.setPointSize(12)
         self.setFont(font)
         if self.dynamic:
             self.setDragEnabled(True)
             self.setDropIndicatorShown(True)
-            self.setDragDropMode(QAbstractItemView.InternalMove)
+            self.setDragDropMode(QAbstractItemView.DragDropMode.InternalMove)
             self.setDefaultDropAction(Qt.DropAction.MoveAction)
             self.setAcceptDrops(True)
         else:
             self.setDragEnabled(False)
+        
+        # Add the items to the list
+        self.add_draggable_list_methods()
    
     def get_new_method_list(self):
         #Query the MyListWidget for the current list of methods

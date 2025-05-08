@@ -1,7 +1,8 @@
 from PyQt6.QtCore import Qt, QRectF, QEvent
-from PyQt6.QtCore import pyqtSignal as Signal, QT_VERSION_STR
+from PyQt6.QtCore import pyqtSignal as Signal
 from PyQt6.QtGui import QImage, QPixmap, QPainterPath, QPainter
 from PyQt6.QtWidgets import QGraphicsView,QGraphicsScene,QFileDialog
+
 import numpy as np
 import qimage2ndarray
 import os
@@ -65,7 +66,7 @@ class QImageViewer(QGraphicsView):
 
         self.setRenderHints(QPainter.RenderHint.Antialiasing | QPainter.RenderHint.SmoothPixmapTransform)
         self.setTransformationAnchor(QGraphicsView.ViewportAnchor.AnchorUnderMouse)
-        self.setDragMode(QGraphicsView.ScrollHandDrag)
+        self.setDragMode(QGraphicsView.DragMode.ScrollHandDrag)
         
 
     def hasImage(self):
@@ -109,7 +110,7 @@ class QImageViewer(QGraphicsView):
             qimage = qimage2ndarray.array2qimage(image)
             pixmap = QPixmap.fromImage(qimage)
         else:
-            raise RuntimeError("ImageViewer.setImage: Argument must be a QImage or QPixmap.")
+            raise RuntimeError("ImageViewer.setImage: Argument must be a QImage, QPixmap or Numpy array.")
         self.geometry = pixmap.rect()
         if self.hasImage():
             self._pixmapHandle.setPixmap(pixmap)
@@ -152,11 +153,11 @@ class QImageViewer(QGraphicsView):
         scenePos = self.mapToScene(event.pos())
         if event.button() == Qt.MouseButton.LeftButton:
             if self.canPan:
-                self.setDragMode(QGraphicsView.ScrollHandDrag)
+                self.setDragMode(QGraphicsView.DragMode.ScrollHandDrag)
             self.leftMouseButtonPressed.emit(scenePos.x(), scenePos.y())
         elif event.button() == Qt.MouseButton.RightButton:
             if self.canZoom:
-                self.setDragMode(QGraphicsView.RubberBandDrag)
+                self.setDragMode(QGraphicsView.DragMode.RubberBandDrag)
             self.rightMouseButtonPressed.emit(scenePos.x(), scenePos.y())
         QGraphicsView.mousePressEvent(self, event)
 
@@ -166,7 +167,7 @@ class QImageViewer(QGraphicsView):
         QGraphicsView.mouseReleaseEvent(self, event)
         scenePos = self.mapToScene(event.pos())
         if event.button() == Qt.MouseButton.LeftButton:
-            self.setDragMode(QGraphicsView.NoDrag)
+            self.setDragMode(QGraphicsView.DragMode.NoDrag)
             self.leftMouseButtonReleased.emit(scenePos.x(), scenePos.y())
         elif event.button() == Qt.MouseButton.RightButton:
             if self.canZoom:
@@ -176,7 +177,7 @@ class QImageViewer(QGraphicsView):
                 if selectionBBox.isValid() and (selectionBBox != viewBBox):
                     self.zoomStack.append(selectionBBox)
                     self.updateViewer()
-            self.setDragMode(QGraphicsView.NoDrag)
+            self.setDragMode(QGraphicsView.DragMode.NoDrag)
             self.rightMouseButtonReleased.emit(scenePos.x(), scenePos.y())
 
     def mouseDoubleClickEvent(self, event):

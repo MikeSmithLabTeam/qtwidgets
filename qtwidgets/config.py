@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox
 import PyQt6.QtCore as QtCore
+from PyQt6.QtCore import pyqtSlot
 from qtwidgets import QImageViewer, QCustomSlider, SelectAreaWidget
 
 import sys
@@ -47,6 +48,8 @@ class ConfigGui:
             self.param_dict = {k:check_init_param_val(v) for k,v in param_dict.items()}
         self.func = func
         self.init_ui()
+        self.window.show()
+        self.app.exec()
     
     def init_ui(self):
         self.app = QApplication(sys.argv)
@@ -54,45 +57,47 @@ class ConfigGui:
         self.image_viewer = QImageViewer()
         self.image_viewer.setImage(self.im)
         self.image_viewer.keyPressed.connect(self.close_gui)
-        self.vbox = QVBoxLayout()
-        self.vbox.addWidget(self.image_viewer)
+        layout = QVBoxLayout()
+        layout.addWidget(self.image_viewer)
        
         if self.param_dict is not None:
             self.live_update_checkbox = QCheckBox('Live Update', parent=self.window)
-            self.vbox.addWidget(self.live_update_checkbox)
-            self.add_sliders()
+            layout.addWidget(self.live_update_checkbox)
+            self.add_sliders(layout)
             self.live_update_checkbox.stateChanged.connect(self._update_sliders)
-        self.window.setLayout(self.vbox)
-        self.window.show()
-        self.app.exec_()
+            
+        self.window.setLayout(layout)
+        
     
-    def add_sliders(self):
+    def add_sliders(self, layout):
         self.sliders = {}
 
         for key in sorted(self.param_dict.keys()):
             val, bottom, top, step = self.param_dict[key]
             slider = QCustomSlider(
-                parent=self.window, title=key, min_=bottom, max_=top, value_=val,
+                parent=self.window, value_=val, title=key, min_=bottom, max_=top,
                 step_=step, spinbox=True)
-            slider.valueChanged.connect(self.slider_callback)
-            self.vbox.addWidget(slider)
+            slider.valueChanged.connect(self._update_sliders)
+            layout.addWidget(slider)
             self.sliders[key] = slider
 
-    def slider_callback(self):
+    
+    def _update_sliders(self, val):
+        print('_update')
         if self.live_update_checkbox.isChecked():
-            self._update_sliders()
-
-    def _update_sliders(self):
-        for key in self.param_dict:
-            val = self.sliders[key].value()
-            self.param_dict[key][0] = val
-        self._update_img()
+            # Update reduced_dict with current values
+            self.reduced_dict = {k: self.sliders[k].value() for k in self.param_dict.keys()}
+            # Update the image
+            result = self.func(self._im0, **self.reduced_dict)
+            # Display the result
+            self.image_viewer.setImage(result)
 
     def _update_img(self):
         """Update the image. Takes original image and applies the function
         to it. The dict comprehension takes the first value from the list of values
         with each key which corresponds to the value and passes new dictionary with key and 
         just this value to function."""
+
         if self.param_dict is None:
             self.im = self.func(self._im0)
         else:
