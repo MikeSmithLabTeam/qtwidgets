@@ -1,6 +1,11 @@
-from PyQt6.QtWidgets import *
-from PyQt6.QtCore import *
-from PyQt6.QtGui import *
+from PyQt6.QtWidgets import QWidget
+from PyQt6.QtCore import Qt, QPoint, QRect
+from PyQt6.QtGui import (
+    QColor, 
+    QPainter, 
+    QBrush, 
+    QPolygon
+)
 import numpy as np
 
 
@@ -13,7 +18,12 @@ class SelectAreaWidget(QWidget):
         colour: QColor object
         handle_rad: int - This is the size of the handles that allow the user to drag the shape around
 
-        The SelectAreaWidget connects to a signal from the viewer's keyPressEvent that can be used to close the window and return the points.
+        Press Enter to return the coords of selector
+
+        Key code to add to a SelectAreaWidget to a QImageViewer called viewer
+        -----------------------------------------------
+        area_selector = SelectAreaWidget(shape='rect', viewer=viewer, points=[(20,20),(200,200)], handle_rad=25)
+        viewer.scene.addWidget(area_selector)
     """
     def __init__(self, shape=None, viewer=None, points=None, colour=QColor(250, 10, 10, 80), handle_rad=5):
         self.viewer = viewer
@@ -37,7 +47,6 @@ class SelectAreaWidget(QWidget):
 
         self.parse_points(points)
         if points is not None:
-            self.draw_shape()
             self.update()
 
     def parse_points(self, points):
@@ -47,24 +56,25 @@ class SelectAreaWidget(QWidget):
                 self.qpoints.append(QPoint(point[0],point[1]))
 
     def paintEvent(self, event):
-        self.draw_shape()
-
-    def draw_shape(self):
+        painter = QPainter(self)
+        painter.begin(self)
         if len(self.qpoints) > 0:
-            self.handles = []
-            if self.shape=='rect':
-                self.rectangle(self.qpoints)
-            elif self.shape == 'ellipse':
-                self.ellipse(self.qpoints)
-            elif self.shape == 'circle':
-                self.circle(self.qpoints)       
-            elif self.shape == 'polygon':
-                self.polygon(self.qpoints)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+            painter.setBrush(QBrush(self.colour))
+            self.draw_shape(painter)
+        painter.end()
 
-    def rectangle(self, qpoints):
-        qp = QPainter(self)
-        br = QBrush(self.colour)
-        qp.setBrush(br)
+    def draw_shape(self, painter):           
+        if self.shape == 'rect':
+            self.rectangle(painter, self.qpoints)
+        elif self.shape == 'ellipse':
+            self.ellipse(painter, self.qpoints)
+        elif self.shape == 'circle':
+            self.circle(painter, self.qpoints)       
+        elif self.shape == 'polygon':
+            self.polygon(painter, self.qpoints)
+
+    def rectangle(self,qp, qpoints):
         qp.drawRect(QRect(qpoints[0], qpoints[1]))   
         handles = [QPoint(qpoints[0].x(),qpoints[0].y()),
                    QPoint(qpoints[1].x(),qpoints[1].y())]
@@ -72,10 +82,7 @@ class SelectAreaWidget(QWidget):
         self.qpoints = qpoints 
         self.points = [(qpoints[0].x(),qpoints[0].y()),(qpoints[1].x(),qpoints[1].y())]
 
-    def ellipse(self, qpoints):
-        qp = QPainter(self)
-        br = QBrush(self.colour)
-        qp.setBrush(br)
+    def ellipse(self, qp, qpoints):
         qp.drawEllipse(QRect(qpoints[0], qpoints[1]))  
         handles = [QPoint(qpoints[0].x(),qpoints[0].y()),
                    QPoint(qpoints[1].x(),qpoints[1].y())]
@@ -83,10 +90,7 @@ class SelectAreaWidget(QWidget):
         self.qpoints=qpoints
         self.points = [(qpoints[0].x(),qpoints[0].y()),(qpoints[1].x(),qpoints[1].y())]
         
-    def circle(self, qpoints):
-        qp = QPainter(self)
-        br = QBrush(self.colour)
-        qp.setBrush(br)
+    def circle(self, qp, qpoints):
         dx = qpoints[1].x() - qpoints[0].x()
         dy = qpoints[1].y() - qpoints[0].y()
         rad = ((dx)**2 + (dy)**2)**0.5
@@ -96,10 +100,7 @@ class SelectAreaWidget(QWidget):
         self.add_handles(qp, handles)
         self.points = [(qpoints[0].x(),qpoints[0].y()),(qpoints[1].x(),qpoints[1].y())]
 
-    def polygon(self, qpoints):
-        qp = QPainter(self)
-        br = QBrush(self.colour)
-        qp.setBrush(br)
+    def polygon(self, qp, qpoints):
         polygon = QPolygon(qpoints)
         qp.drawPolygon(polygon) 
         self.add_handles(qp, qpoints)  
@@ -128,6 +129,13 @@ class SelectAreaWidget(QWidget):
         if event.key() == Qt.Key.Key_Return:
             self.adjustable = True
             print(self.points)
+        elif event.key() == Qt.Key.Key_Q:
+            proxy = self.graphicsProxyWidget()
+            if proxy:
+                # Remove proxy from scene
+                scene = proxy.scene()
+                if scene:
+                    scene.removeItem(proxy)
     
     def mousePressEvent(self, event):
         self.begin = event.position().toPoint()
@@ -155,6 +163,8 @@ class SelectAreaWidget(QWidget):
     def mouseReleaseEvent(self, event):
         if self.shape != 'polygon':
             self.adjustable = True
+    
+    
             
         
 
