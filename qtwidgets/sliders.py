@@ -26,8 +26,6 @@ class QCustomSlider(QWidget):
 
         self.title = title
 
-        value_ = min_
-
         self.layout = QHBoxLayout()
         self.title_label = QLabel(title, self)
         self.layout.addWidget(self.title_label)
