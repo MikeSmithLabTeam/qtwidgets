@@ -158,7 +158,7 @@ class SelectShapeGui:
         self.window.setLayout(self.vbox)
         self.window.show()
         
-        self.app.exec_()
+        self.app.exec()
         
     
     def close_gui(self, event):
