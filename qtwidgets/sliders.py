@@ -3,6 +3,37 @@ from PyQt6.QtGui import QPixmap, QIcon
 from PyQt6.QtCore import Qt, pyqtSignal
 from .spinbox import QSteppedSpinBox, QSteppedSpinBoxDecimal
 
+stylesheet = """
+QScrollBar:vertical {
+    border: 1px solid #999999;
+    background: #e0e0e0;
+    width: 15px;
+    margin: 22px 0 22px 0; /* Creates space for the arrows */
+}
+
+QScrollBar::add-line:vertical {
+    border: 1px solid #999999;
+    background: #f0f0f0;
+    height: 20px; /* Adjust height to control arrow size */
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:vertical {
+    border: 1px solid #999999;
+    background: #f0f0f0;
+    height: 20px; /* Adjust height to control arrow size */
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+    border: 1px solid #999999;
+    width: 3px;
+    height: 3px;
+    background: #333333;
+}
+"""
 
 class QCustomSlider(QWidget):
     """This slider has a slider, spinbox, checkbox and label. It can be used to adjust values in a GUI.
@@ -139,6 +170,8 @@ class QCustomSlider(QWidget):
         else:
             self.slider.setEnabled(False)
             self.spinbox.setEnabled(False)
+    
+    
 
 class QSteppedSlider(QSlider):
     onValueChanged = pyqtSignal(int)
