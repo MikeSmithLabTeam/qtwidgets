@@ -91,9 +91,9 @@ class SelectAreaWidget(QWidget):
         self.points = [(qpoints[0].x(),qpoints[0].y()),(qpoints[1].x(),qpoints[1].y())]
         
     def circle(self, qp, qpoints):
-        dx = qpoints[1].x() - qpoints[0].x()
-        dy = qpoints[1].y() - qpoints[0].y()
-        rad = ((dx)**2 + (dy)**2)**0.5
+        dx = int(qpoints[1].x() - qpoints[0].x())
+        dy = int(qpoints[1].y() - qpoints[0].y())
+        rad = int(((dx)**2 + (dy)**2)**0.5)
         qp.drawEllipse(qpoints[0], rad, rad)
         self.qpoints=qpoints
         handles = self.qpoints
