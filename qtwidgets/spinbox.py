@@ -16,8 +16,8 @@ class QSteppedSpinBox(QSpinBox):
     def __init__(self,
                  parent: QWidget = None
                  ):
+        super().__init__(parent)
         self.setStyleSheet(self._get_stylesheet())
-        QSpinBox.__init__(self, parent)
         self.valueChanged.connect(self.sliderValueChanged)
         self.setKeyboardTracking(False)
 
@@ -77,9 +77,11 @@ class QSteppedSpinBoxDecimal(QDoubleSpinBox):
     onValueChanged = pyqtSignal(float)
 
     def __init__(self,parent: QWidget | None = None, value_: float | None =None, decimals: int = 0, range: tuple[float, float, float] | None = None):
+        
+        super().__init__(parent)
         self.setStyleSheet(self._get_stylesheet())
         
-        QDoubleSpinBox.__init__(self, parent)
+        
         self.valueChanged.connect(self.spinboxValueChanged)
         self.setKeyboardTracking(False)
         self.setAlignment(Qt.AlignmentFlag.AlignRight)
