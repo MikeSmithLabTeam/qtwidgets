@@ -1,0 +1,11 @@
+name: qt
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python>=3.13.*
+  - numpy >=1.25
+  - opencv
+  - pip
+  - pip:
+    - -e.
